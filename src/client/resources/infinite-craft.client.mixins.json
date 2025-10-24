@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "com.infinite_craft.mixin.client",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"HandledScreenAccessor",
+		"CraftingScreenMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

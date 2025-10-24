@@ -1,0 +1,6 @@
+{
+  "model": {
+	"type": "minecraft:model",
+	"model": "infinite_craft:item/default_custom_crafted_item"
+  }
+}

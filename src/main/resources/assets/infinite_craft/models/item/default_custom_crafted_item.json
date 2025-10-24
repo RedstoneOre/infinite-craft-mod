@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+	"layer0": "infinite_craft:item/default_custom_crafted_item",
+	"particle": "#layer0"
+  }
+}
