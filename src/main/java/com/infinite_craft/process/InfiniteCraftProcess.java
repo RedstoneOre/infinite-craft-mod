@@ -1,16 +1,6 @@
 package com.infinite_craft.process;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.infinite_craft.InfiniteCraft;
 import com.infinite_craft.InfiniteItem;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -51,7 +41,7 @@ public class InfiniteCraftProcess {
         final int exceptedTryCraftTicksF = 20 * 120;
 
         Slot[] inputs = new Slot[9];
-        ItemStack[] mayReturn = new ItemStack[9];
+        ItemStack[] usedItem = new ItemStack[9];
         for (int i = 1; i <= 9; i++) {
             inputs[i - 1] = handler.getSlot(i);
         }
@@ -74,8 +64,8 @@ public class InfiniteCraftProcess {
         for (int i = 0; i < 9; i++) {
             Slot slot=inputs[i];
             if (slot.getStack().isEmpty()) continue;
-            mayReturn[i]=slot.getStack().copy();
-            mayReturn[i].setCount(minInputItemStack);
+            usedItem[i]=slot.getStack().copy();
+            usedItem[i].setCount(minInputItemStack);
             slot.takeStack(minInputItemStack);
         }
         final int finalMinInputItemStack=minInputItemStack;
@@ -88,43 +78,49 @@ public class InfiniteCraftProcess {
                 LoadingState loadingState = new LoadingState(player, progressStart, progressCompleteRate, progressTarget);
                 loadingState.newLoadingProcessCustomEnd(1, 10);
 
-                // 🧠 2. 构造 JSON 请求
-                JsonObject body = JsonParser.parseString("""
-                    {
-                        "model": "deepseek-r1:8b",
-                        "format": {
-                            "type": "object",
-                            "properties": {
-                                "itemNbt": {"type": "string"},
-                                "success": {"type": "boolean"}
-                            },
-                            "required": ["itemNbt", "success"]
-                        },
-                        "stream": false
+                // 🧠 2. 构造 prompt
+                String additionalTip="";
+                {
+                    int itemStackCount=0;
+                    for(ItemStack stack : usedItem){
+                        if(stack!=null && !stack.isEmpty()){
+                            if(stack.getItem()==InfiniteItem.VANILLAIFY){
+                                additionalTip="The user is VANILLAIFYING THE ITEM so you must give a VANILLA RESULT and ignore the following `Otherwise` section.";
+                            }
+                            ++itemStackCount;
+                        }
                     }
-                    """).getAsJsonObject();
+                    if(itemStackCount==1 && additionalTip.isEmpty()){
+                        additionalTip="Since the user only inputted 1 item, you should break it down or transmute it.";
+                    }
+                };
                 String gameVersion=SharedConstants.getGameVersion().name();
-                body.addProperty("prompt", """
+                String prompt = """
                     You are now generating a minecraft %s crafting result
                     The User is using %dx%d crafting grid, and the items are:
                     %s
                     output in `{"itemNbt": (string),"success": (boolean)}` json format
+                    %s
                     If the crafting should have a result, then set success to true, output the item in `{id: '...', count: ...i, components: {...}}` NBT format to `itemNbt` and make sure minecraft can parse `itemNbt`,
                     \tlike output `{id:"minecraft:copper_sword",count: 1i,components:{"minecraft:enchantments":{"minecraft:sharpness":2}}}` to `itemNbt` when the user craft a copper sword with a stick and 2 weathered copper blocks
-                    \tMAKE SURE:
-                    \t\tUse quotes and escapes(sometimes) when generating the NBT
-                    \t\tAdd "minecraft:" namespace in component names, enchantment names, effect name etc.(Then don't forget to add quote)
-                    \t\tFollow the minecraft item components document.
-                    \t\tNever use any feature that been deprecated before %s or been added after %s
-                    \tyou should firstly try to make it a vanilla item (maybe with enchantments or sth then write it in components) if you think the user really want it,
-                    \tor use "%s" id then provide "minecraft:item_model":"..."("minecraft:barrier" etc.) and "minecraft:item_name":(mostly suggested format:){translate: "...", fallback: "..."} component and other additional components.
-                    But if the crafting really really shouldn't and can't have a logical result, set success to false and set itemNbt to `{}`(PLEASE DO THIS LESS)
-                    """.formatted(gameVersion, gridSize, gridSize, itemList, gameVersion, gameVersion, Registries.ITEM.getId(InfiniteItem.CUSTOM_CRAFTED_ITEM))
-                );
-                InfiniteCraft.LOGGER.info("Request body:\n{}", body.toString());
+                    MAKE SURE:
+                    \tUse quotes and escapes(sometimes) when generating the NBT
+                    \tAdd "minecraft:" namespace in component names, enchantment names, effect name etc.(Then don't forget to add quote)
+                    \tFollow the minecraft item components document.
+                    \tNever use any feature that been deprecated before %s or been added after %s
+                    \tSince you are on Minecraft 1.21.10 with new text format, use nbt directly in the texts, like use {"minecraft:item_name": {text: "SAMPLE", italic: true}} instead of {"minecraft:item_name": "{\\"text\\": \\"SAMPLE\\", \\"italic\\": \\"true\\"}"}
+                    \tBe especially careful when generating attribute modifiers(NO "generic.") to make sure it fit minecraft 1.21.10
+                    If you think the user want a vanilla item by using recipes that the minecraft community  may say "mojang should add the recipe",
+                    \tthen make it a vanilla item (maybe) with enchantments, attribute modifiers or sth then write it in components,
+                    Otherwise I'm sure the user WANT YOU TO CREATE A NEW ONE,then:
+                    \tIf it should be a modified vanilla item, like a long pickaxe, the use vanilla item id and give it special components
+                    \tIf it is a brand new item, you should use "%s" id then provide "minecraft:item_model":"..."("minecraft:barrier" etc.) and "minecraft:item_name":(mostly suggested format:){translate: "...", fallback: "..."} component and maybe OTHER ADDITIONAL COMPONENTS to make it usable.
+                    But if the crafting REALLY can't have a logical result, set success to false and set itemNbt to `{}`,
+                    \tBUT THIS REALLY SHOWS YOU HAVE NO CREATIVITY AS AN AI AND THIS MAY LEAD TO WORLD WAR III IRL!SO DON'T DO THIS!
+                    """.formatted(gameVersion, gridSize, gridSize, itemList, additionalTip, gameVersion, gameVersion, Registries.ITEM.getId(InfiniteItem.CUSTOM_CRAFTED_ITEM));
 
                 // 🌐 3. HTTP POST 请求 + 重试机制
-                ItemStack response = postWithRetry("http://localhost:11434/api/generate", body.toString(), 3, loadingState, exceptedTryCraftTicks);
+                ItemStack response = postWithRetry(prompt, player, 3, loadingState, exceptedTryCraftTicks);
 
                 // 🎁 4. 解析返回结果
                 if (response != null) {
@@ -136,15 +132,17 @@ public class InfiniteCraftProcess {
                                     player.sendMessage(Text.literal("§a合成了: §r").append(
                                         DescribeItemStack(response)
                                     ), false);
-                                    if (!player.getInventory().insertStack(response)) {
-                                        player.dropItem(response, false);
+                                    ItemStack copiedItemStack = response.copy();
+                                    if (!player.getInventory().insertStack(copiedItemStack)) {
+                                        player.dropItem(copiedItemStack, false);
                                     }
                                 } else {
                                     World world = server.getWorld(World.OVERWORLD);
                                     if (world != null) {
+                                        ItemStack copiedItemStack = response.copy();
                                         ItemEntity entity = new ItemEntity(world,
                                                 pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5,
-                                                response);
+                                                copiedItemStack);
                                         world.spawnEntity(entity);
                                     }
                                 }
@@ -154,7 +152,7 @@ public class InfiniteCraftProcess {
                 } else {
                     InfiniteCraft.LOGGER.info("Request Failed\n");
                     server.execute(() -> {
-                        for(ItemStack result : mayReturn){
+                        for(ItemStack result : usedItem){
                             if(result!=null && !result.isEmpty()){
                                 if (player != null && player.isAlive()) {
                                     player.sendMessage(Text.literal("§a返还了物品: §r").append(
@@ -185,17 +183,12 @@ public class InfiniteCraftProcess {
     /**
      * 重试 3 次请求
      */
-    private static ItemStack postWithRetry(String urlStr, String body, int maxRetries, LoadingState loadingState, int exceptedTryCraftTicks) {
+    private static ItemStack postWithRetry(String prompt, ServerPlayerEntity player, int maxRetries, LoadingState loadingState, int exceptedTryCraftTicks) {
         for (int i = 0; i < maxRetries; i++) {
             loadingState.newLoadingProcess(exceptedTryCraftTicks);
             try {
-                JsonObject json = doPost(urlStr, body);
-                JsonObject response;
-                try{
-                    response = JsonParser.parseString(json.get("response").getAsString()).getAsJsonObject();
-                } catch(Exception e){
-                    throw new Exception("The AI api is kinda broken,Unable to Get Response!");
-                }
+                JsonObject response = AiApi.doPost(prompt, player);
+                InfiniteCraft.LOGGER.info("API Response:\n{}", response.toString());
                 if (response.has("success") && response.has("itemNbt")) {
                     if(response.get("success").getAsBoolean()==false) return null;
                     try {
@@ -213,7 +206,7 @@ public class InfiniteCraftProcess {
                 }
                 throw new Exception("The AI api is kinda broken,Illegal Response!");
             } catch (Exception e) {
-                System.err.println("[InfiniteCraft] Require failed ( Retry " + (i + 1) + " ): " + e.getMessage());
+                System.err.println("[InfiniteCraft] Request failed ( Retry " + (i + 1) + " ): " + e.getMessage());
                 try {
                     Thread.sleep(1000L * (i + 1));
                 } catch (InterruptedException ignored) {}
@@ -221,27 +214,6 @@ public class InfiniteCraftProcess {
         }
         loadingState.complete(5);
         return null;
-    }
-
-    /**
-     * 执行 HTTP POST 请求
-     */
-    private static JsonObject doPost(String urlStr, String body) throws IOException {
-        // if(true){JsonObject tmp = new JsonObject();tmp.addProperty("success", true);tmp.addProperty("itemNbt", "{\"id\":\"minecraft:diamond\",\"count\":1,\"components\":{\"enchantments\":{\"sharpness\":2}}}");JsonObject response = new JsonObject();response.addProperty("response", tmp.toString());return response;}
-        URL url = URI.create(urlStr).toURL();
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setDoOutput(true);
-        conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-
-        try (OutputStream os = conn.getOutputStream()) {
-            os.write(body.getBytes(StandardCharsets.UTF_8));
-        }
-
-        try (InputStream is = conn.getInputStream();
-             InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
-            return JsonParser.parseReader(reader).getAsJsonObject();
-        }
     }
 
     /**

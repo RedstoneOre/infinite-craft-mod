@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "minecraft:stick",
+    "#": "minecraft:dirt"
+  },
+  "pattern": [
+    " I ",
+    "I#I",
+    " I "
+  ],
+  "result": {
+    "id": "infinite_craft:vanillaify"
+  },
+  "category": "misc",
+  "show_notification": true
+}

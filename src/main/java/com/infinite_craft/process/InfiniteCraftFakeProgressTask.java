@@ -50,7 +50,9 @@ public class InfiniteCraftFakeProgressTask {
 
     public static double getProgress(ServerPlayerEntity player) {
         TaskState state = activeTasks.get(player);
-        return state.interpolate();
+        if(state!=null){
+            return state.interpolate();
+        } else return 0;
     }
 
     private static class TaskState {

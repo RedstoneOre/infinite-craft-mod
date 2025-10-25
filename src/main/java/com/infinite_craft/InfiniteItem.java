@@ -25,6 +25,7 @@ public class InfiniteItem{
 	}
 
   public static final Item CUSTOM_CRAFTED_ITEM = register("custom_crafted_item", Item::new, new Item.Settings());
+  public static final Item VANILLAIFY = register("vanillaify", Item::new, new Item.Settings());
   public static void initialize() {
   }
 }
