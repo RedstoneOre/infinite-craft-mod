@@ -110,7 +110,7 @@ public class InfiniteCraftProcess {
                     \tNever use any feature that been deprecated before %s or been added after %s
                     \tSince you are on Minecraft 1.21.10 with new text format, use nbt directly in the texts, like use {"minecraft:item_name": {text: "SAMPLE", italic: true}} instead of {"minecraft:item_name": "{\\"text\\": \\"SAMPLE\\", \\"italic\\": \\"true\\"}"}
                     \tBe especially careful when generating attribute modifiers(NO "generic.") to make sure it fit minecraft 1.21.10
-                    If you think the user want a vanilla item by using recipes that the minecraft community  may say "mojang should add the recipe",
+                    If you think the user want a vanilla item by using recipes that the minecraft community may say "mojang should add the recipe",
                     \tthen make it a vanilla item (maybe) with enchantments, attribute modifiers or sth then write it in components,
                     Otherwise I'm sure the user WANT YOU TO CREATE A NEW ONE,then:
                     \tIf it should be a modified vanilla item, like a long pickaxe, the use vanilla item id and give it special components

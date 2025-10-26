@@ -2,6 +2,7 @@
   "java.project.referencedLibraries": [
     ".gradle/loom-cache/minecraftMaven/**/*.jar"
   ],
+  "java.jdt.ls.java.home": "D:/ModrinthApp/meta/java_versions/jdk-21.0.9",
   "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable",
   "java.configuration.updateBuildConfiguration": "interactive",
   "java.format.settings.url": ".vscode/java-formatter.xml",
