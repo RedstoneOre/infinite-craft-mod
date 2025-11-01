@@ -5,6 +5,8 @@
 
 這是一個基於 AI 的 Minecraft 無限合成模組，它允許玩家透過 AI 的幫助來創造新的物品。
 
+*不平衡，可能會產生非法物品或重複物品，僅供娛樂！*
+
 ## 概述
 
 Infinite Craft 是一個 Fabric 模組，它為 Minecraft 新增了一個創新的合成系統。該模組使用 Google 的 Gemini AI API 來生成和處理新的物品合成配方。
@@ -59,5 +61,5 @@ Infinite Craft 是一個 Fabric 模組，它為 Minecraft 新增了一個創新�
 
 ## 連結
 
-- Modrinth 主頁：https://modrinth.com/user/RedstoneOre
+- Modrinth 主頁：https://modrinth.com/mod/infinite-craft-mod
 - Fabric 官方網站：https://fabricmc.net/

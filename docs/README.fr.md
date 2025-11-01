@@ -5,6 +5,8 @@
 
 Ceci est un mod Minecraft Infinite Crafting basé sur l'IA qui permet aux joueurs de créer de nouveaux objets avec l'aide d'une IA.
 
+*Déséquilibré, peut produire des objets illégaux ou des doublons, juste pour le plaisir !*
+
 ## Aperçu
 
 Infinite Craft est un mod Fabric qui ajoute un système de crafting innovant à Minecraft. Le mod utilise l'API Gemini de Google pour générer et gérer de nouvelles recettes de crafting.
@@ -59,5 +61,5 @@ Le fichier de configuration est `config/InfiniteCraft.json`, structure comme sui
 
 ## Liens
 
-- Modrinth: https://modrinth.com/user/RedstoneOre
+- Modrinth: https://modrinth.com/mod/infinite-craft-mod
 - Fabric: https://fabricmc.net/
