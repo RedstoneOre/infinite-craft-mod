@@ -60,6 +60,11 @@ Le fichier de configuration est `config/InfiniteCraft.json`, structure comme sui
    - Configurez les clés d'API de l'IA via un fichier de configuration JSON
    - Emplacement du fichier de configuration : `config/InfiniteCraft.json`
 
+3. Vanillaify
+  - Fabriquez un objet `Vanillaify` en utilisant cette recette :
+    ![Recette Vanillaify](crafting%20vanillaify.png)
+  - Combinez-le avec d'autres objets dans la table de craft
+
 ## Liens
 
 - Modrinth: https://modrinth.com/mod/infinite-craft-mod

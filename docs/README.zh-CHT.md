@@ -60,6 +60,11 @@ Infinite Craft 是一個 Fabric 模組，它為 Minecraft 新增了一個創新�
    - 透過 JSON 配置檔配置 AI API 密鑰
    - 配置檔位置：`config/InfiniteCraft.json`
 
+3. **原版化**
+  - 使用以下配方製作`原版化`物品：
+    ![原版化配方](crafting%20vanillaify.png)
+  - 然後在工作台中將其與其他物品組合
+
 ## 連結
 
 - Modrinth 主頁：https://modrinth.com/mod/infinite-craft-mod

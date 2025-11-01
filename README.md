@@ -60,6 +60,11 @@ The config file is `config/InfiniteCraft.json`, structure as follows:
    - Configure AI API keys via a JSON config file
    - Config file location: `config/InfiniteCraft.json`
 
+3. Vanillaify
+   - Craft a `Vanillaify` item using this recipe:
+    ![Vanillaify Recipe](docs/crafting%20vanillaify.png)
+   - Combine it with other items in the crafting table
+
 ## Links
 
 - Modrinth: https://modrinth.com/mod/infinite-craft-mod
