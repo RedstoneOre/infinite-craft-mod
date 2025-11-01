@@ -1,32 +1,63 @@
 # Infinite Craft Mod
+[简体中文](docs/README.zh-CN.md)
+[繁體中文](docs/README.zh-CHT.md)
+[français](docs/README.fr.md)
 
-这是一个基于AI的Minecraft无限合成模组，它允许玩家通过AI的帮助来创造新的物品。
+This is an AI-based Minecraft Infinite Crafting mod that allows players to create new items with the help of AI.
 
-## 概述
+## Overview
 
-Infinite Craft是一个Fabric模组，它为Minecraft添加了一个创新的合成系统。该模组使用Google的Gemini AI API来生成和处理新的物品合成配方。
+Infinite Craft is a Fabric mod that adds an innovative crafting system to Minecraft. The mod uses Google's Gemini AI API to generate and handle new item crafting recipes.
 
-## 系统要求
+## System Requirements
 
 - Minecraft 1.21.10
 - Fabric Loader >= 0.17.3
 - Java >= 21
 - Fabric API
 
-> 对于中国大陆的单人游戏或服务器用户，如需通过代理使用Gemini，请在JVM参数中添加`-Djava.net.useSystemProxies=true`
+> For single-player or server users in mainland China, if you need to use Gemini through a proxy, add `-Djava.net.useSystemProxies=true` to the JVM arguments
 
-## 功能特点
+## Configuration
+The config file is `config/InfiniteCraft.json`, structure as follows:
+```json
+{
+  "gemini": {
+    "api_key": "...",
+    "model": "...",
+    "note": [
+      "Gemini API Is Currently Free!",
+      "the `model` can be: ",
+      "    gemini-2.5-flash",
+      "    gemini-2.5-flash-lite",
+      "    or any other ones in https://ai.google.dev/gemini-api/docs/models",
+      "For API key, generate here: https://aistudio.google.com/api-keys"
+    ]
+  },
+  "proxy": "...",
+  "model": "...",
+  "description": {
+    "proxy": "Proxy type, could be (none, system)",
+    "model": "The model to use, could be (none, gemini, ollama), use none if you only use the mod as a player of a server",
+    "gemini": "The gemini config",
+    "!!!": "This file will be overridden, so please save your important information somewhere else!"
+  }
+}
+```
++ The proxy options cannot work for some reason so you still need to add `-Djava.net.useSystemProxies=true`
 
-1. **AI辅助合成**
-   - 使用Google Gemini AI API来处理物品合成
-   - 支持动态生成新的物品和合成配方
-   - 智能合成结果生成
+## Features
 
-2. **配置**
-   - 通过JSON配置文件配置AI API密钥
-   - 配置文件位置：`config/InfiniteCraft.json`
+1. AI-assisted crafting
+   - Uses Google Gemini AI API to process item crafting
+   - Supports dynamically generating new items and crafting recipes
+   - Generates intelligent crafting results
 
-## 链接
+2. Configuration
+   - Configure AI API keys via a JSON config file
+   - Config file location: `config/InfiniteCraft.json`
 
-- Modrinth主页：https://modrinth.com/user/RedstoneOre
-- Fabric官网：https://fabricmc.net/
+## Links
+
+- Modrinth: https://modrinth.com/user/RedstoneOre
+- Fabric: https://fabricmc.net/

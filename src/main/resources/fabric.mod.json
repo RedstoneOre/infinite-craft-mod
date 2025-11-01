@@ -8,8 +8,8 @@
 		"RedstoneOre"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/RedstoneOre/infinite-craft-mod/blob/main/README.md",
+		"sources": "https://github.com/RedstoneOre/infinite-craft-mod"
 	},
 	"license": "MIT",
 	"icon": "assets/infinite-craft/icon.png",
@@ -40,9 +40,9 @@
 	},
 	"custom": {
 	"modmenu": {
-	  "links": {
-	"modmenu.modrinth": "https://modrinth.com/user/RedstoneOre"
-	  }
+			"links": {
+				"modmenu.modrinth": "https://modrinth.com/user/RedstoneOre"
+			}
 		}
 	}
 }
