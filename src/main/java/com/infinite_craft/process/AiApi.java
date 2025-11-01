@@ -21,14 +21,22 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class AiApi {
 	
 	public static JsonObject doPost(String prompt, ServerPlayerEntity player) throws IOException, RuntimeException {
-		return doPostGemini(prompt, player);
+		switch(InfiniteCraft.config.ModelType){
+			case "none":
+				throw new AiProblemException("Unable to run the model because it's disabled in the config file(.\"model\")");
+			case "gemini":
+				return doPostGemini(prompt, player);
+			case "ollama":
+				return doPostOllama(prompt);
+		}
+		throw new AiProblemException("IDK why but this isn't supposed to happen");
 	};
 
     public static JsonObject doPostGemini(String prompt, ServerPlayerEntity player) throws IOException, RuntimeException {
 		try {
 			Client geminiClient = InfiniteCraft.gemini.getClient(player);
 			if(geminiClient==null){
-				throw new RuntimeException("Gemini is not initialized");
+				throw new AiProblemException("Gemini is not initialized");
 			}
 			GenerateContentResponse response =
 				geminiClient.models.generateContent(
@@ -38,7 +46,7 @@ public class AiApi {
 				);
 			return JsonParser.parseString(response.text()).getAsJsonObject();
 		} catch( Exception e ){
-			e.printStackTrace();
+            InfiniteCraft.LOGGER.error(e.getMessage());
 			throw e;
 		}
     }
@@ -81,7 +89,7 @@ public class AiApi {
 						.getAsString()
 				).getAsJsonObject();
 			} catch(Exception e){
-				throw new RuntimeException("The AI api is kinda broken,Unable to Get Response!\n"+e.getMessage());
+				throw new AiProblemException("The AI api is kinda broken,Unable to Get Response!\n"+e.getMessage());
 			}
         }
     }

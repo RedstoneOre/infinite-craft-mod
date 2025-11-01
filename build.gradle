@@ -1,5 +1,6 @@
 plugins {
 	id 'fabric-loom' version "${loom_version}"
+	id 'com.gradleup.shadow' version '9.2.2'
 	id 'maven-publish'
 }
 
@@ -16,6 +17,8 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+
+	maven { url = "https://maven.google.com" }
 }
 
 loom {
@@ -43,10 +46,108 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.10.1'
 
 	//ChatGpt
-	// implementation 'com.openai:openai-java:4.0.0'
+	// modImplementation 'com.openai:openai-java:4.0.0'
 
 	//Gemini
 	implementation 'com.google.genai:google-genai:1.0.0'
+}
+
+// import org.gradle.api.file.DuplicatesStrategy
+
+// tasks.register('fatJar', Jar) {
+//     group = 'build'
+//     description = 'Assembles a jar containing only Google dependencies.'
+//     dependsOn remapJar
+
+//     archiveClassifier.set('fat')
+
+//     // ✅ 仅包含以下 groupId 的依赖
+//     def includeGroups = [
+//         'com.google.genai',
+//         'com.google.guava',
+//         'com.google.auth',
+//         'com.google.http-client'
+//     ]
+
+// 		from {
+//         zipTree(tasks.remapJar.archiveFile.get().asFile)
+//     }
+
+//     from {
+//         configurations.runtimeClasspath
+//             .resolvedConfiguration
+//             .resolvedArtifacts
+//             .findAll { artifact ->
+//                 includeGroups.contains(artifact.moduleVersion.id.group)
+//             }
+//             .collect { artifact ->
+//                 zipTree(artifact.file).matching {
+//                     include 'com/google/genai/**'
+//                     include 'com/google/auth/**'
+//                     include 'com/google/common/**'
+//                     include 'com/google/api/client/**'
+//                 }
+//             }
+//     }
+
+//     // ✅ 把 mod 自身文件也一起打进去
+//     with tasks.remapJar
+
+//     // ✅ 解决重复文件冲突
+//     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//     exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+//     exclude 'META-INF/INDEX.LIST'
+// }
+
+shadowJar {
+    archiveClassifier.set('shadow')
+
+		// dependsOn remapJar
+    // from(zipTree(remapJar.archiveFile))
+
+    from sourceSets.main.output
+    from sourceSets.client.output
+
+		configurations = [project.configurations.runtimeClasspath]
+		
+    dependencies {
+        include(dependency('com.google.genai:.*'))
+				include { dep ->
+            def g = dep.moduleGroup ?: ''
+            // 包含 google 相关、以及 jackson（jdk8/jsr310/databind/annotations/core）
+            return g.startsWith('com.fasterxml.jackson')
+                || g.startsWith('org.slf4j')  // 如果需要可选日志包
+        }
+    }
+
+    relocate 'com.google.genai',      'com.infinite_craft.libs.google.genai'
+		relocate 'com.fasterxml.jackson', 'com.infinite_craft.libs.jackson'
+		relocate 'org.slf4j',             'com.infinite_craft.libs.slf4j'
+
+    // exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/INDEX.LIST'
+
+    mergeServiceFiles()
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+tasks.register('printShadowDeps') {
+    doLast {
+        println "=== Dependencies in shadowJar ==="
+
+        // Shadow 9+ 的 API：configurations 是一个 Provider<Set<Configuration>>
+        def configs = shadowJar.configurations.get()
+        configs.each { conf ->
+            conf.resolvedConfiguration.resolvedArtifacts.each { art ->
+                println " -> ${art.moduleVersion.id.group}:${art.name}:${art.moduleVersion.id.version}"
+            }
+        }
+    }
+}
+
+remapJar {
+    dependsOn shadowJar
+    input.set(shadowJar.archiveFile)
+    archiveClassifier.set(null) // 让 remapJar 成为最终产物
 }
 
 processResources {

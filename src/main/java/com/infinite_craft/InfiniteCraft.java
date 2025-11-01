@@ -35,7 +35,8 @@ public class InfiniteCraft implements ModInitializer {
 		PayloadTypeRegistry.playS2C().register(SendArrowProgressS2CPayload.ID, SendArrowProgressS2CPayload.CODEC);
 		InfiniteCraftFakeProgressTask.registerTickHandler();
 		config.load();
-		gemini.initClient(config.GeminiApiKey);
+		config.write();
+		gemini.initClient(config);
 	}
 	public InfiniteCraft(){
 		super();

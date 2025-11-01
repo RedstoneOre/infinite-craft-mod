@@ -175,7 +175,7 @@ public class InfiniteCraftProcess {
                     });
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                InfiniteCraft.LOGGER.error(e.getMessage());
             }
         }, "InfiniteCraft-HTTP").start();
     }
@@ -200,7 +200,7 @@ public class InfiniteCraftProcess {
                             return null;
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        InfiniteCraft.LOGGER.error(e.getMessage());
                         throw new Exception("The AI is too dumb!");
                     }
                 }
