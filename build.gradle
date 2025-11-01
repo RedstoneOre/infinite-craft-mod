@@ -50,6 +50,7 @@ dependencies {
 
 	//Gemini
 	implementation 'com.google.genai:google-genai:1.0.0'
+	shadow 'com.google.genai:google-genai:1.0.0'
 }
 
 // import org.gradle.api.file.DuplicatesStrategy
@@ -99,35 +100,50 @@ dependencies {
 //     exclude 'META-INF/INDEX.LIST'
 // }
 
+configurations {
+	shadow {
+			transitive = true
+	}
+}
+import java.util.jar.JarFile
 shadowJar {
     archiveClassifier.set('shadow')
-
-		// dependsOn remapJar
-    // from(zipTree(remapJar.archiveFile))
+    configurations = [project.configurations.shadow]
 
     from sourceSets.main.output
     from sourceSets.client.output
 
-		configurations = [project.configurations.runtimeClasspath]
-		
-    dependencies {
-        include(dependency('com.google.genai:.*'))
-				include { dep ->
-            def g = dep.moduleGroup ?: ''
-            // 包含 google 相关、以及 jackson（jdk8/jsr310/databind/annotations/core）
-            return g.startsWith('com.fasterxml.jackson')
-                || g.startsWith('org.slf4j')  // 如果需要可选日志包
+    // relocate
+		doFirst {
+        def seen = [] as Set
+        def shadowConfig = project.configurations.shadow
+
+        shadowConfig.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+            def jarFile = artifact.file
+            if (jarFile.name.endsWith('.jar') && jarFile.exists() && jarFile.isFile()) {
+                try {
+                    def jar = new JarFile(jarFile)
+                    jar.entries().each { entry ->
+                        def name = entry.name
+                        if (name.endsWith('.class') && name.contains('/')) {
+                            def parts = name.split('/')
+                            if (parts.length >= 2) {
+                                def rootPkg = parts[0..1].join('.')
+                                if (!seen.contains(rootPkg)) {
+                                    relocate rootPkg, "com.infinite_craft.libs.${rootPkg}"
+                                    seen << rootPkg
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    println "⚠️ Failed to scan ${jarFile.name}: ${e.message}"
+                }
+            }
         }
     }
 
-    relocate 'com.google.genai',      'com.infinite_craft.libs.google.genai'
-		relocate 'com.fasterxml.jackson', 'com.infinite_craft.libs.jackson'
-		relocate 'org.slf4j',             'com.infinite_craft.libs.slf4j'
-
-    // exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/INDEX.LIST'
-
     mergeServiceFiles()
-
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 tasks.register('printShadowDeps') {

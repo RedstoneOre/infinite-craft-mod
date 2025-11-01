@@ -1,8 +1,9 @@
 {
   "pack": {
-	"description": "The Infinite Craft Pack",
-	"pack_format": 88,
-	"min_format": 69,
-	"max_format": 88
+		"description": "The Infinite Craft Pack",
+		"pack_format": 88,
+		"min_format": 69,
+		"max_format": 88,
+		"supported_formats": [69, 81]
   }
 }
