@@ -33,7 +33,6 @@ Le fichier de configuration est `config/InfiniteCraft.json`, structure comme sui
       "    ou tout autre modèle disponible sur https://ai.google.dev/gemini-api/docs/models",
       "Pour générer une clé API, rendez-vous ici: https://aistudio.google.com/api-keys"
     ]
-    ]
   },
   "proxy": "...",
   "model": "...",

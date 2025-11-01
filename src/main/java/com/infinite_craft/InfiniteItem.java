@@ -1,6 +1,8 @@
 package com.infinite_craft;
 
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -27,5 +29,7 @@ public class InfiniteItem{
   public static final Item CUSTOM_CRAFTED_ITEM = register("custom_crafted_item", Item::new, new Item.Settings());
   public static final Item VANILLAIFY = register("vanillaify", Item::new, new Item.Settings());
   public static void initialize() {
+	ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS)
+		.register((itemGroup) -> itemGroup.add(VANILLAIFY));
   }
 }
