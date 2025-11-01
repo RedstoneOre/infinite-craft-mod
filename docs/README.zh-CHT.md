@@ -47,6 +47,7 @@ Infinite Craft 是一個 Fabric 模組，它為 Minecraft 新增了一個創新�
 }
 ```
 + 代理選項由於*某種原因*無法正常工作，因此您仍然需要添加 `-Djava.net.useSystemProxies=true` 
++ Ollama 的配置當前不可用！
 
 ## 功能特點
 

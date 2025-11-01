@@ -47,6 +47,7 @@ Le fichier de configuration est `config/InfiniteCraft.json`, structure comme sui
 }
 ```
 + Les options de proxy ne fonctionnent pas pour une raison quelconque, vous devez donc toujours ajouter `-Djava.net.useSystemProxies=true`
++ La configuration pour Ollama n'est actuellement pas disponible !
 
 ## Fonctionnalités
 

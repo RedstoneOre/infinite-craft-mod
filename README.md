@@ -47,6 +47,7 @@ The config file is `config/InfiniteCraft.json`, structure as follows:
 }
 ```
 + The proxy options cannot work for some reason so you still need to add `-Djava.net.useSystemProxies=true`
++ The config for ollama is currently not avalible!
 
 ## Features
 
