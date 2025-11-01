@@ -1,4 +1,6 @@
 {
   "item.infinite_craft.custom_crafted_item": "Artisanat Infini!",
-  "item.infinite_craft.vanillaify": "Vanillifier"
+  "item.infinite_craft.vanillaify": "Vanillifier",
+  "chat.message.infinite_craft.craft.success": "Fabriqué: ",
+  "chat.message.infinite_craft.craft.return": "Retourné: "
 }

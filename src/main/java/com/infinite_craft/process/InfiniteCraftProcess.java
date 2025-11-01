@@ -23,6 +23,7 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -129,9 +130,17 @@ public class InfiniteCraftProcess {
                         server.execute(() -> { // 回到主线程
                             for (int i = 0; i < finalMinInputItemStack; i++) {
                                 if (player != null && player.isAlive()) {
-                                    player.sendMessage(Text.literal("§a合成了: §r").append(
-                                        DescribeItemStack(response)
-                                    ), false);
+                                    player.sendMessage(Text.translatableWithFallback("chat.message.infinite_craft.craft.success","Crafted: ")
+                                        .setStyle(
+                                            Style.EMPTY.withColor(TextColor.parse("lime").result().orElse(TextColor.fromRgb(0xbfff00)))
+                                        )
+                                        .append(
+                                            DescribeItemStack(response)
+                                            .setStyle(
+                                                Style.EMPTY.withColor(TextColor.parse("white").result().orElse(TextColor.fromRgb(0xffffff)))
+                                            )
+                                        ),
+                                    false);
                                     ItemStack copiedItemStack = response.copy();
                                     if (!player.getInventory().insertStack(copiedItemStack)) {
                                         player.dropItem(copiedItemStack, false);
@@ -155,9 +164,17 @@ public class InfiniteCraftProcess {
                         for(ItemStack result : usedItem){
                             if(result!=null && !result.isEmpty()){
                                 if (player != null && player.isAlive()) {
-                                    player.sendMessage(Text.literal("§a返还了物品: §r").append(
-                                        DescribeItemStack(result)
-                                    ), false);
+                                    player.sendMessage(Text.translatableWithFallback("chat.message.infinite_craft.craft.return","Returned: ")
+                                        .setStyle(
+                                            Style.EMPTY.withColor(TextColor.parse("lime").result().orElse(TextColor.fromRgb(0xbfff00)))
+                                        )
+                                        .append(
+                                            DescribeItemStack(result)
+                                            .setStyle(
+                                                Style.EMPTY.withColor(TextColor.parse("white").result().orElse(TextColor.fromRgb(0xffffff)))
+                                            )
+                                        ),
+                                    false);
                                     if (!player.getInventory().insertStack(result)) {
                                         player.dropItem(result, false);
                                     }

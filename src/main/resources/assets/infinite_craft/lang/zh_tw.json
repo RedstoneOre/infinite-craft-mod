@@ -1,4 +1,6 @@
 {
   "item.infinite_craft.custom_crafted_item": "無盡合成!",
-  "item.infinite_craft.vanillaify": "原版化"
+  "item.infinite_craft.vanillaify": "原版化",
+  "chat.message.infinite_craft.craft.success": "合成了：",
+  "chat.message.infinite_craft.craft.return": "返還了："
 }
