@@ -3,13 +3,22 @@
 [简体中文](README.zh-CN.md)
 [繁體中文](README.zh-CHT.md)
 
-Ceci est un mod Minecraft Infinite Crafting basé sur l'IA qui permet aux joueurs de créer de nouveaux objets avec l'aide d'une IA.
+Ceci est un mod Minecraft de crafting infini basé sur l'IA qui permet aux joueurs de créer de nouveaux objets avec l'aide d'une IA.
 
 *Déséquilibré, peut produire des objets illégaux ou des doublons, juste pour le plaisir !*
 
 ## Aperçu
 
 Infinite Craft est un mod Fabric qui ajoute un système de crafting innovant à Minecraft. Le mod utilise l'API Gemini de Google pour générer et gérer de nouvelles recettes de crafting.
+
+## Démarrage rapide
+
+1. Téléchargez ce mod depuis [Modrinth](https://modrinth.com/mod/infinite-craft-mod/versions) ou [Github](https://github.com/RedstoneOre/infinite-craft-mod/releases/latest)
+2. Utilisez-le dans Minecraft 1.21.10 avec Fabric & Fabric API
+3. Créez `config/InfiniteCraft.json` et lancez le jeu
+4. Fermez le jeu et ajoutez votre clé API dans `"gemini"."api_key"` dans `config/InfiniteCraft.json`
+5. Définissez `model` sur `gemini-2.5-flash`
+6. Redémarrez le jeu
 
 ## Configuration système
 
@@ -47,7 +56,7 @@ Le fichier de configuration est `config/InfiniteCraft.json`, structure comme sui
 }
 ```
 + Les options de proxy ne fonctionnent pas pour une raison quelconque, vous devez donc toujours ajouter `-Djava.net.useSystemProxies=true`
-+ La configuration pour Ollama n'est actuellement pas disponible !
++ La configuration pour Ollama n'est actuellement pas disponible !
 
 ## Fonctionnalités
 
@@ -68,4 +77,5 @@ Le fichier de configuration est `config/InfiniteCraft.json`, structure comme sui
 ## Liens
 
 - Modrinth: https://modrinth.com/mod/infinite-craft-mod
-- Fabric: https://fabricmc.net/
+- Github: https://github.com/RedstoneOre/infinite-craft-mod
+- Gemini Docs: https://ai.google.dev/gemini-api/docs

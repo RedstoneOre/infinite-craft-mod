@@ -11,6 +11,15 @@
 
 Infinite Craft 是一個 Fabric 模組，它為 Minecraft 新增了一個創新的合成系統。該模組使用 Google 的 Gemini AI API 來生成和處理新的物品合成配方。
 
+## 快速開始
+
+1. 從 [Modrinth](https://modrinth.com/mod/infinite-craft-mod/versions) 或 [GitHub](https://github.com/RedstoneOre/infinite-craft-mod/releases/latest) 下載此模組  
+2. 在 Minecraft 1.21.10 中使用 Fabric 和 Fabric API 運行  
+3. 創建 `config/InfiniteCraft.json` 並啟動遊戲  
+4. 關閉遊戲，將你的 API 密鑰填入 `config/InfiniteCraft.json` 的 `"gemini"."api_key"` 字段  
+5. 將 `model` 設置為 `gemini-2.5-flash`  
+6. 重啟遊戲
+
 ## 系統需求
 
 - Minecraft 1.21.10
@@ -67,5 +76,6 @@ Infinite Craft 是一個 Fabric 模組，它為 Minecraft 新增了一個創新�
 
 ## 連結
 
-- Modrinth 主頁：https://modrinth.com/mod/infinite-craft-mod
-- Fabric 官方網站：https://fabricmc.net/
+- Modrinth : https://modrinth.com/mod/infinite-craft-mod
+- Github: https://github.com/RedstoneOre/infinite-craft-mod
+- Gemini Docs: https://ai.google.dev/gemini-api/docs

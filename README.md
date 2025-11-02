@@ -11,6 +11,15 @@ This is an AI-based Minecraft Infinite Crafting mod that allows players to creat
 
 Infinite Craft is a Fabric mod that adds an innovative crafting system to Minecraft. The mod uses Google's Gemini AI API to generate and handle new item crafting recipes.
 
+## Quick Start
+
+1. Download this mod from [Modrinth](https://modrinth.com/mod/infinite-craft-mod/versions) or [Github](https://github.com/RedstoneOre/infinite-craft-mod/releases/latest)
+2. Use it in Minecraft 1.21.10 with Fabric & Fabric API
+3. Create `config/InfiniteCraft.json` and launch the game
+4. Close the game and put your api key to `"gemini"."api_key"` in `config/InfiniteCraft.json`
+5. Set `model` to `gemini-2.5-flash`
+6. Restart the game
+
 ## System Requirements
 
 - Minecraft 1.21.10
@@ -68,4 +77,5 @@ The config file is `config/InfiniteCraft.json`, structure as follows:
 ## Links
 
 - Modrinth: https://modrinth.com/mod/infinite-craft-mod
-- Fabric: https://fabricmc.net/
+- Github: https://github.com/RedstoneOre/infinite-craft-mod
+- Gemini Docs: https://ai.google.dev/gemini-api/docs
