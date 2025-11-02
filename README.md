@@ -16,7 +16,7 @@ Infinite Craft is a Fabric mod that adds an innovative crafting system to Minecr
 1. Download this mod from [Modrinth](https://modrinth.com/mod/infinite-craft-mod/versions) or [Github](https://github.com/RedstoneOre/infinite-craft-mod/releases/latest)
 2. Use it in Minecraft 1.21.10 with Fabric & Fabric API
 3. Create `config/InfiniteCraft.json` and launch the game
-4. Close the game and put your api key to `"gemini"."api_key"` in `config/InfiniteCraft.json`
+4. Close the game and put your [api key](https://aistudio.google.com/app/api-keys) to `"gemini"."api_key"` in `config/InfiniteCraft.json`
 5. Set `model` to `gemini-2.5-flash`
 6. Restart the game
 

@@ -16,7 +16,7 @@ Infinite Craft是一个Fabric模组，它为Minecraft添加了一个创新的合
 1. 从 [Modrinth](https://modrinth.com/mod/infinite-craft-mod/versions) 或 [GitHub](https://github.com/RedstoneOre/infinite-craft-mod/releases/latest) 下载此模组  
 2. 在 Minecraft 1.21.10 中使用 Fabric 和 Fabric API 运行  
 3. 创建 `config/InfiniteCraft.json` 并启动游戏  
-4. 关闭游戏，将你的 API 密钥填入 `config/InfiniteCraft.json` 的 `"gemini"."api_key"` 字段  
+4. 关闭游戏，将你的 [API 密钥](https://aistudio.google.com/app/api-keys)填入 `config/InfiniteCraft.json` 的 `"gemini"."api_key"` 字段  
 5. 将 `model` 设置为 `gemini-2.5-flash`  
 6. 重启游戏
 
