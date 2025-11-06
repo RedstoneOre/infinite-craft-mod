@@ -14,18 +14,24 @@ public class LoadingState {
 		progressTarget=_progressTarget;
 	}
 	public void newLoadingProcess(int exceptedTicks){
-		InfiniteCraftFakeProgressTask.interrupt(player);
-		double progressEnd = progressStart + (progressTarget-progressStart)*progressCompleteRate;
-		InfiniteCraftFakeProgressTask.start(player, progressStart, progressEnd, exceptedTicks);
-		progressStart=progressEnd;
+		player.getEntityWorld().getServer().executeSync(()->{
+			InfiniteCraftFakeProgressTask.interrupt(player);
+			double progressEnd = progressStart + (progressTarget-progressStart)*progressCompleteRate;
+			InfiniteCraftFakeProgressTask.start(player, progressStart, progressEnd, exceptedTicks);
+			progressStart=progressEnd;
+		});
 	}
 	public void newLoadingProcessCustomEnd(int exceptedTicks, double progressEnd){
-		InfiniteCraftFakeProgressTask.interrupt(player);
-		InfiniteCraftFakeProgressTask.start(player, progressStart, progressEnd, exceptedTicks);
-		progressStart=progressEnd;
+		player.getEntityWorld().getServer().executeSync(()->{
+			InfiniteCraftFakeProgressTask.interrupt(player);
+			InfiniteCraftFakeProgressTask.start(player, progressStart, progressEnd, exceptedTicks);
+			progressStart=progressEnd;
+		});
 	}
 	public void complete(int exceptedTicks){
-		InfiniteCraftFakeProgressTask.interrupt(player);
-		InfiniteCraftFakeProgressTask.start(player, progressStart, progressTarget, exceptedTicks);
+		player.getEntityWorld().getServer().executeSync(()->{
+			InfiniteCraftFakeProgressTask.interrupt(player);
+			InfiniteCraftFakeProgressTask.start(player, progressStart, progressTarget, exceptedTicks);
+		});
 	}
 }

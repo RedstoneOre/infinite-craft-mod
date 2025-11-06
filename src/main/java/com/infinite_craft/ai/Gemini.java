@@ -31,6 +31,9 @@ public class Gemini {
 								},
 								"itemNbt": {
 									"type": "string"
+								},
+								"element": {
+									"type": "string"
 								}
 							}
 						}

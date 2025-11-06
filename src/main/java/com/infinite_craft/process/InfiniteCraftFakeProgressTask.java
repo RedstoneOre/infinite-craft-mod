@@ -6,6 +6,9 @@ import com.infinite_craft.networking.InfiniteCraftNetworking;
 
 import java.util.WeakHashMap;
 
+/**
+ * ALL OF THE METHODS MUST BE EXECUTED IN THE MAIN SERVER THREAD
+ */
 public class InfiniteCraftFakeProgressTask {
 
     private static final WeakHashMap<ServerPlayerEntity, TaskState> activeTasks = new WeakHashMap<>();

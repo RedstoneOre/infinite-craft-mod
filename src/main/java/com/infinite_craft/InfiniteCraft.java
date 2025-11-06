@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.infinite_craft.ai.Gemini;
+import com.infinite_craft.element.ElementItems;
 import com.infinite_craft.networking.SendArrowProgressS2CPayload;
 import com.infinite_craft.process.InfiniteCraftFakeProgressTask;
 // import com.openai.client.OpenAIClient;
@@ -32,6 +33,7 @@ public class InfiniteCraft implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 		InfiniteItem.initialize();
+		ElementItems.initialize();
 		PayloadTypeRegistry.playS2C().register(SendArrowProgressS2CPayload.ID, SendArrowProgressS2CPayload.CODEC);
 		InfiniteCraftFakeProgressTask.registerTickHandler();
 		config.load();

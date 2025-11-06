@@ -1,8 +1,12 @@
 package com.infinite_craft.process;
 
+import java.util.NoSuchElementException;
+
 import com.google.gson.JsonObject;
 import com.infinite_craft.InfiniteCraft;
 import com.infinite_craft.InfiniteItem;
+import com.infinite_craft.element.ElementData;
+import com.infinite_craft.element.ElementItems;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.SharedConstants;
@@ -50,14 +54,24 @@ public class InfiniteCraftProcess {
             Slot slot=inputs[i];
             if (slot.getStack().isEmpty()) continue;
             ItemStack stack = slot.getStack();
-            NbtCompound nbt = ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, stack)
-                .resultOrPartial(error -> System.err.println("编码失败: " + error))
-                .map(nbtElement -> (NbtCompound) nbtElement)
-                .orElseThrow();
-            nbt.remove("count");
+            String itemDesc;
+            try{
+                if(ElementData.isElement(stack.getItem())){
+                    itemDesc="Element " + ElementData.fromItem(stack.getItem()).orElseThrow().toString();
+                } else {
+                    NbtCompound nbt = ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, stack)
+                        .resultOrPartial(error -> {})
+                        .map(nbtElement -> (NbtCompound) nbtElement)
+                        .orElseThrow();
+                    nbt.remove("count");
+                    itemDesc="Item " + nbt.toString();
+                }
+            } catch(NoSuchElementException e) {
+                itemDesc="What the heck is " + e.getMessage();
+            }
             int row = i / 3;
             int col = i % 3;
-            itemList.append(String.format("slot line %d col %d: %s\n", row, col, nbt.toString()));
+            itemList.append(String.format("slot line %d col %d: %s\n", row, col, itemDesc));
             minInputItemStack=Math.min(slot.getStack().getCount(), minInputItemStack);
         }
         InfiniteCraft.LOGGER.info("Min Input Item Stack: {}", minInputItemStack);
@@ -111,6 +125,9 @@ public class InfiniteCraftProcess {
                     \tNever use any feature that been deprecated before %s or been added after %s
                     \tSince you are on Minecraft 1.21.10 with new text format, use nbt directly in the texts, like use {"minecraft:item_name": {text: "SAMPLE", italic: true}} instead of {"minecraft:item_name": "{\\"text\\": \\"SAMPLE\\", \\"italic\\": \\"true\\"}"}
                     \tBe especially careful when generating attribute modifiers(NO "generic.") to make sure it fit minecraft 1.21.10
+                    If you think the result should be an ELEMENT, like the original Infinite Craft game, then set `element` to the element name, and provide "minecraft:item_model" in `itemNbt`.
+                    \tFor example, the user input element `Wind` and `Water`, you should return {"success": true, "element": "Wave", "itemNbt": "{components: {\\"minecraft:item_model\\": \\"minecraft:blue_stained_glass\\"}}"}
+                    \tIf the element name have multiple words, simply separate them with spaces.
                     If you think the user want a vanilla item by using recipes that the minecraft community may say "mojang should add the recipe",
                     \tthen make it a vanilla item (maybe) with enchantments, attribute modifiers or sth then write it in components,
                     Otherwise I'm sure the user WANT YOU TO CREATE A NEW ONE,then:
@@ -198,7 +215,7 @@ public class InfiniteCraftProcess {
     }
 
     /**
-     * 重试 3 次请求
+     * Ask Ai and return a item stack
      */
     private static ItemStack postWithRetry(String prompt, ServerPlayerEntity player, int maxRetries, LoadingState loadingState, int exceptedTryCraftTicks) {
         for (int i = 0; i < maxRetries; i++) {
@@ -209,16 +226,17 @@ public class InfiniteCraftProcess {
                 if (response.has("success") && response.has("itemNbt")) {
                     if(response.get("success").getAsBoolean()==false) return null;
                     try {
-                        if(response.get("success").getAsBoolean()==true){
-                            String nbtString = response.get("itemNbt").getAsString();
-                            InfiniteCraft.LOGGER.info("Item NBT:\n"+nbtString);
+                        String nbtString = response.get("itemNbt").getAsString();
+                        InfiniteCraft.LOGGER.info("Item NBT:\n"+nbtString);
+                        if(!response.has("element")){
                             return parseItemStackFromNbt(nbtString);
                         } else {
-                            return null;
+                            NbtCompound itemNbt = StringNbtReader.readCompound(nbtString).asCompound().get();
+                            return ElementItems.generateElement(new ElementData("#", response.get("element").getAsString(), "white"), itemNbt);
                         }
                     } catch (Exception e) {
                         InfiniteCraft.LOGGER.error(e.getMessage());
-                        throw new Exception("The AI is too dumb!");
+                        throw new Exception("The AI is too dumb!"+e.getMessage());
                     }
                 }
                 throw new Exception("The AI api is kinda broken,Illegal Response!");

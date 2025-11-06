@@ -66,6 +66,7 @@ public class AiApi {
 					"type": "object",
 					"properties": {
 						"itemNbt": {"type": "string"},
+						"element": {"type": "string"},
 						"success": {"type": "boolean"}
 					},
 					"required": ["itemNbt", "success"]

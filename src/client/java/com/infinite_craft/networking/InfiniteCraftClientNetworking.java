@@ -17,7 +17,7 @@ public class InfiniteCraftClientNetworking {
 				int progress = payload.progress();
 
 				context.client().execute(() -> {
-					InfiniteCraftClient.LOGGER.info("收到箭头进度: {}", progress);
+					InfiniteCraftClient.LOGGER.info("Received Progress: {}", progress);
 					if (MinecraftClient.getInstance().currentScreen instanceof CraftingScreen screen) {
 						((ICraftingScreen) screen).setArrowProgress(progress);
 					}
