@@ -23,6 +23,7 @@ import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -30,14 +31,13 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class InfiniteCraftProcess {
 
     /**
      * 异步执行请求并给予结果
      */
-    public static void requestCraftResult(MinecraftServer server, ServerPlayerEntity player, BlockPos pos, CraftingScreenHandler handler) {
+    public static void requestCraftResult(MinecraftServer server, ServerPlayerEntity player, BlockPos pos, ServerWorld dimension, CraftingScreenHandler handler) {
 
         // 🧱 1. 获取工作台格子物品
         StringBuilder itemList = new StringBuilder();
@@ -148,6 +148,7 @@ public class InfiniteCraftProcess {
                 ItemStack response = postWithRetry(prompt, player, 3, loadingState, exceptedTryCraftTicks);
 
                 // 🎁 4. 解析返回结果
+                loadingState.complete(5);
                 if (response != null) {
                     InfiniteCraft.LOGGER.info("Request Result:\n{}", response.toString());
                     if (!response.isEmpty()) {
@@ -170,7 +171,7 @@ public class InfiniteCraftProcess {
                                         player.dropItem(copiedItemStack, false);
                                     }
                                 } else {
-                                    World world = server.getWorld(World.OVERWORLD);
+                                    ServerWorld world = dimension;
                                     if (world != null) {
                                         ItemStack copiedItemStack = response.copy();
                                         ItemEntity entity = new ItemEntity(world,
@@ -203,7 +204,7 @@ public class InfiniteCraftProcess {
                                         player.dropItem(result, false);
                                     }
                                 } else {
-                                    World world = server.getWorld(World.OVERWORLD);
+                                    ServerWorld world = dimension;
                                     if (world != null) {
                                         ItemEntity entity = new ItemEntity(world,
                                                 pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5,
@@ -259,7 +260,6 @@ public class InfiniteCraftProcess {
                 } catch (InterruptedException ignored) {}
             }
         }
-        loadingState.complete(5);
         return null;
     }
 

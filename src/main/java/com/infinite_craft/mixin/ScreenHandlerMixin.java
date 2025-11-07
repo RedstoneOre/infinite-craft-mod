@@ -2,6 +2,7 @@ package com.infinite_craft.mixin;
 
 import com.infinite_craft.InfiniteCraft;
 
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
@@ -72,7 +73,7 @@ public abstract class ScreenHandlerMixin {
 
 				if (player instanceof ServerPlayerEntity serverPlayer) {
 					InfiniteCraftNetworking.sendArrowProgress(serverPlayer, 0);
-					InfiniteCraftProcess.requestCraftResult(world.getServer(), serverPlayer, serverPlayer.getBlockPos(), handler);
+					InfiniteCraftProcess.requestCraftResult(world.getServer(), serverPlayer, serverPlayer.getBlockPos(), serverPlayer.getEntityWorld(), handler);
 				}
 			}
 		}

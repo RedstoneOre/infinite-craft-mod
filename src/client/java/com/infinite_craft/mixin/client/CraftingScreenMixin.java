@@ -25,16 +25,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class CraftingScreenMixin implements ICraftingScreen {
 
 	// 当前箭头进度 0~100，由服务器更新
-	private int arrowProgress = 0;
+	private static int arrowProgress = 0;
 
 	@Shadow private static Identifier TEXTURE;
 
 	// 允许网络包更新进度
     @Override
 	public void setArrowProgress(int progress) {
-	    arrowProgress=progress;
-        InfiniteCraftClient.LOGGER.info("设置箭头进度: {}", progress);
-
+        arrowProgress=progress;
 	}
 
 	// 原有自定义输出注入
