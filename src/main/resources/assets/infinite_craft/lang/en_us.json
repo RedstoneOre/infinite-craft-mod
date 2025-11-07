@@ -1,6 +1,8 @@
 {
   "item.infinite_craft.custom_crafted_item": "Infinite Craft!",
   "item.infinite_craft.vanillaify": "Vanillaify",
+  "item.infinite_craft.element": "Element",
+  "item.infinite_craft.element.uncraftable": "Uncraftable Element",
   "chat.message.infinite_craft.craft.success": "Crafted: ",
   "chat.message.infinite_craft.craft.return": "Returned: "
 }

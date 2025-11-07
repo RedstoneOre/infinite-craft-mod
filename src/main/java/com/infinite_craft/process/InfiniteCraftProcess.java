@@ -56,8 +56,8 @@ public class InfiniteCraftProcess {
             ItemStack stack = slot.getStack();
             String itemDesc;
             try{
-                if(ElementData.isElement(stack.getItem())){
-                    itemDesc="Element " + ElementData.fromItem(stack.getItem()).orElseThrow().toString();
+                if(ElementData.isElement(stack)){
+                    itemDesc="Element " + ElementData.fromItem(stack).orElseThrow().toString();
                 } else {
                     NbtCompound nbt = ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, stack)
                         .resultOrPartial(error -> {})
@@ -96,17 +96,24 @@ public class InfiniteCraftProcess {
                 // 🧠 2. 构造 prompt
                 String additionalTip="";
                 {
-                    int itemStackCount=0;
+                    int itemStackCount=0, elementCount=0;
                     for(ItemStack stack : usedItem){
                         if(stack!=null && !stack.isEmpty()){
                             if(stack.getItem()==InfiniteItem.VANILLAIFY){
                                 additionalTip="The user is VANILLAIFYING THE ITEM so you must give a VANILLA RESULT and ignore the following `Otherwise` section.";
                             }
+                            if(ElementData.isElement(stack)){
+                                ++elementCount;
+                            }
                             ++itemStackCount;
                         }
                     }
-                    if(itemStackCount==1 && additionalTip.isEmpty()){
-                        additionalTip="Since the user only inputted 1 item, you should break it down or transmute it.";
+                    if(additionalTip.isEmpty()){
+                        if(itemStackCount==1){
+                            additionalTip="Since the user only inputted 1 item, you should break it down or transmute it.";
+                        } else if(itemStackCount==elementCount){
+                            additionalTip="The user probably want you to create an element.";
+                        }
                     }
                 };
                 String gameVersion=SharedConstants.getGameVersion().name();
@@ -125,8 +132,8 @@ public class InfiniteCraftProcess {
                     \tNever use any feature that been deprecated before %s or been added after %s
                     \tSince you are on Minecraft 1.21.10 with new text format, use nbt directly in the texts, like use {"minecraft:item_name": {text: "SAMPLE", italic: true}} instead of {"minecraft:item_name": "{\\"text\\": \\"SAMPLE\\", \\"italic\\": \\"true\\"}"}
                     \tBe especially careful when generating attribute modifiers(NO "generic.") to make sure it fit minecraft 1.21.10
-                    If you think the result should be an ELEMENT, like the original Infinite Craft game, then set `element` to the element name, and provide "minecraft:item_model" in `itemNbt`.
-                    \tFor example, the user input element `Wind` and `Water`, you should return {"success": true, "element": "Wave", "itemNbt": "{components: {\\"minecraft:item_model\\": \\"minecraft:blue_stained_glass\\"}}"}
+                    If you think the result should be an ELEMENT, like the original Infinite Craft game, then describe the element in {"name":$name,"emoji":$emoji,"color":$color} format in `element`, and provide "minecraft:item_model" in `itemNbt`.
+                    \tFor example, the user input element `Wind` and `Water`, you should return {"success": true, "element": {"name":"Wave","emoji":"🌊","color":"aqua"}, "itemNbt": "{components: {\\"minecraft:item_model\\": \\"minecraft:blue_stained_glass\\"}}"}
                     \tIf the element name have multiple words, simply separate them with spaces.
                     If you think the user want a vanilla item by using recipes that the minecraft community may say "mojang should add the recipe",
                     \tthen make it a vanilla item (maybe) with enchantments, attribute modifiers or sth then write it in components,
@@ -232,7 +239,12 @@ public class InfiniteCraftProcess {
                             return parseItemStackFromNbt(nbtString);
                         } else {
                             NbtCompound itemNbt = StringNbtReader.readCompound(nbtString).asCompound().get();
-                            return ElementItems.generateElement(new ElementData("#", response.get("element").getAsString(), "white"), itemNbt);
+                            JsonObject elementData = response.get("element").getAsJsonObject();
+                            return ElementItems.generateElement(new ElementData(
+                                elementData.get("emoji").getAsString(),
+                                elementData.get("name").getAsString(),
+                                elementData.get("color").getAsString()
+                            ), itemNbt);
                         }
                     } catch (Exception e) {
                         InfiniteCraft.LOGGER.error(e.getMessage());

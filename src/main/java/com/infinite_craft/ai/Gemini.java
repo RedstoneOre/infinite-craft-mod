@@ -2,9 +2,7 @@ package com.infinite_craft.ai;
 
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentConfig;
-import com.google.genai.types.HttpOptions;
 import com.google.genai.types.Schema;
-import com.google.gson.JsonParser;
 import com.infinite_craft.InfiniteCraft;
 import com.infinite_craft.InfiniteCraftConfig;
 
@@ -16,30 +14,7 @@ public class Gemini {
 		GenerateContentConfig.builder()
 			.responseMimeType("application/json")
 			.responseSchema(
-				Schema.fromJson(
-					JsonParser.parseString(
-						"""
-						{
-							"type": "object",
-							"required": [
-								"success",
-								"itemNbt"
-							],
-							"properties": {
-								"success": {
-									"type": "boolean"
-								},
-								"itemNbt": {
-									"type": "string"
-								},
-								"element": {
-									"type": "string"
-								}
-							}
-						}
-						"""
-					).toString()
-				)
+				Schema.fromJson(AiPrompt.promptJsonSchema.toString())
 			)
 			.build();
 	public Client getClient(ServerPlayerEntity player){

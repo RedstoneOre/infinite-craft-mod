@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import com.infinite_craft.InfiniteCraft;
+import com.infinite_craft.ai.AiPrompt;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -62,20 +63,11 @@ public class AiApi {
 		JsonObject body = JsonParser.parseString("""
 			{
 				"model": "deepseek-r1:8b",
-				"format": {
-					"type": "object",
-					"properties": {
-						"itemNbt": {"type": "string"},
-						"element": {"type": "string"},
-						"success": {"type": "boolean"}
-					},
-					"required": ["itemNbt", "success"]
-				},
 				"stream": false
 			}
 			""").getAsJsonObject();
 		body.addProperty("prompt", prompt);
-
+		body.add("format", AiPrompt.promptJsonSchema);
         try (OutputStream os = conn.getOutputStream()) {
             os.write(body.toString().getBytes(StandardCharsets.UTF_8));
         }

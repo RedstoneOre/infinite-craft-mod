@@ -22,8 +22,8 @@
 			"com.infinite_craft.InfiniteCraftClient"
 		],
 		"fabric-datagen": [ 
-	  "com.infinite_craft.DataGenerator"
-	] 
+			"com.infinite_craft.DataGenerator"
+		]
 	},
 	"mixins": [
 		"infinite-craft.mixins.json",
