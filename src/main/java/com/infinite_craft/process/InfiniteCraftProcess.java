@@ -1,10 +1,14 @@
 package com.infinite_craft.process;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import com.google.gson.JsonObject;
 import com.infinite_craft.InfiniteCraft;
 import com.infinite_craft.InfiniteItem;
+import com.infinite_craft.ai.AiPrompt;
 import com.infinite_craft.element.ElementData;
 import com.infinite_craft.element.ElementItems;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -39,51 +43,34 @@ public class InfiniteCraftProcess {
      */
     public static void requestCraftResult(MinecraftServer server, ServerPlayerEntity player, BlockPos pos, ServerWorld dimension, CraftingScreenHandler handler) {
 
-        // 🧱 1. 获取工作台格子物品
-        StringBuilder itemList = new StringBuilder();
+        // 🧱 1. Get Input Items
         int gridSize = 3;
+        int slotCount = gridSize * gridSize;
         int minInputItemStack=0xff;
         final int exceptedTryCraftTicksF = 20 * 120;
 
-        Slot[] inputs = new Slot[9];
-        ItemStack[] usedItem = new ItemStack[9];
-        for (int i = 1; i <= 9; i++) {
-            inputs[i - 1] = handler.getSlot(i);
+        ArrayList<Slot> inputs = new ArrayList<>();
+        ArrayList<ItemStack> usedItem = new ArrayList<>();
+        for (int i = 1; i <= slotCount; i++) {
+            inputs.add(handler.getSlot(i));
         }
-        for (int i = 0; i < 9; i++) {
-            Slot slot=inputs[i];
+        for (int i = 0; i < slotCount; i++) {
+            Slot slot=inputs.get(i);
             if (slot.getStack().isEmpty()) continue;
             ItemStack stack = slot.getStack();
-            String itemDesc;
-            try{
-                if(ElementData.isElement(stack)){
-                    itemDesc="Element " + ElementData.fromItem(stack).orElseThrow().toString();
-                } else {
-                    NbtCompound nbt = ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, stack)
-                        .resultOrPartial(error -> {})
-                        .map(nbtElement -> (NbtCompound) nbtElement)
-                        .orElseThrow();
-                    nbt.remove("count");
-                    itemDesc="Item " + nbt.toString();
-                }
-            } catch(NoSuchElementException e) {
-                itemDesc="What the heck is " + e.getMessage();
-            }
-            int row = i / 3;
-            int col = i % 3;
-            itemList.append(String.format("slot line %d col %d: %s\n", row, col, itemDesc));
             minInputItemStack=Math.min(slot.getStack().getCount(), minInputItemStack);
         }
         InfiniteCraft.LOGGER.info("Min Input Item Stack: {}", minInputItemStack);
         if(minInputItemStack==0xff) return;
         for (int i = 0; i < 9; i++) {
-            Slot slot=inputs[i];
+            Slot slot=inputs.get(i);
             if (slot.getStack().isEmpty()) continue;
-            usedItem[i]=slot.getStack().copy();
-            usedItem[i].setCount(minInputItemStack);
+            usedItem.add(slot.getStack().copy());
+            usedItem.get(i).setCount(minInputItemStack);
             slot.takeStack(minInputItemStack);
         }
         final int finalMinInputItemStack=minInputItemStack;
+        String playerName = player.getGameProfile().name();
         new Thread(() -> {
             try {
                 int exceptedTryCraftTicks = exceptedTryCraftTicksF;
@@ -93,61 +80,13 @@ public class InfiniteCraftProcess {
                 LoadingState loadingState = new LoadingState(player, progressStart, progressCompleteRate, progressTarget);
                 loadingState.newLoadingProcessCustomEnd(1, 10);
 
-                // 🧠 2. 构造 prompt
-                String additionalTip="";
-                {
-                    int itemStackCount=0, elementCount=0;
-                    for(ItemStack stack : usedItem){
-                        if(stack!=null && !stack.isEmpty()){
-                            if(stack.getItem()==InfiniteItem.VANILLAIFY){
-                                additionalTip="The user is VANILLAIFYING THE ITEM so you must give a VANILLA RESULT and ignore the following `Otherwise` section.";
-                            }
-                            if(ElementData.isElement(stack)){
-                                ++elementCount;
-                            }
-                            ++itemStackCount;
-                        }
-                    }
-                    if(additionalTip.isEmpty()){
-                        if(itemStackCount==1){
-                            additionalTip="Since the user only inputted 1 item, you should break it down or transmute it.";
-                        } else if(itemStackCount==elementCount){
-                            additionalTip="The user probably want you to create an element.";
-                        }
-                    }
-                };
-                String gameVersion=SharedConstants.getGameVersion().name();
-                String prompt = """
-                    You are now generating a minecraft %s crafting result
-                    The User is using %dx%d crafting grid, and the items are:
-                    %s
-                    output in `{"itemNbt": (string),"success": (boolean)}` json format
-                    %s
-                    If the crafting should have a result, then set success to true, output the item in `{id: '...', count: ...i, components: {...}}` NBT format to `itemNbt` and make sure minecraft can parse `itemNbt`,
-                    \tlike output `{id:"minecraft:copper_sword",count: 1i,components:{"minecraft:enchantments":{"minecraft:sharpness":2}}}` to `itemNbt` when the user craft a copper sword with a stick and 2 weathered copper blocks
-                    MAKE SURE:
-                    \tUse quotes and escapes(sometimes) when generating the NBT
-                    \tAdd "minecraft:" namespace in component names, enchantment names, effect name etc.(Then don't forget to add quote)
-                    \tFollow the minecraft item components document.
-                    \tNever use any feature that been deprecated before %s or been added after %s
-                    \tSince you are on Minecraft 1.21.10 with new text format, use nbt directly in the texts, like use {"minecraft:item_name": {text: "SAMPLE", italic: true}} instead of {"minecraft:item_name": "{\\"text\\": \\"SAMPLE\\", \\"italic\\": \\"true\\"}"}
-                    \tBe especially careful when generating attribute modifiers(NO "generic.") to make sure it fit minecraft 1.21.10
-                    If you think the result should be an ELEMENT, like the original Infinite Craft game, then describe the element in {"name":$name,"emoji":$emoji,"color":$color} format in `element`, and provide "minecraft:item_model" in `itemNbt`.
-                    \tFor example, the user input element `Wind` and `Water`, you should return {"success": true, "element": {"name":"Wave","emoji":"🌊","color":"aqua"}, "itemNbt": "{components: {\\"minecraft:item_model\\": \\"minecraft:blue_stained_glass\\"}}"}
-                    \tIf the element name have multiple words, simply separate them with spaces.
-                    If you think the user want a vanilla item by using recipes that the minecraft community may say "mojang should add the recipe",
-                    \tthen make it a vanilla item (maybe) with enchantments, attribute modifiers or sth then write it in components,
-                    Otherwise I'm sure the user WANT YOU TO CREATE A NEW ONE,then:
-                    \tIf it should be a modified vanilla item, like a long pickaxe, the use vanilla item id and give it special components
-                    \tIf it is a brand new item, you should use "%s" id then provide "minecraft:item_model":"..."("minecraft:barrier" etc.) and "minecraft:item_name":(mostly suggested format:){translate: "...", fallback: "..."} component and maybe OTHER ADDITIONAL COMPONENTS to make it usable.
-                    But if the crafting REALLY can't have a logical result, set success to false and set itemNbt to `{}`,
-                    \tBUT THIS REALLY SHOWS YOU HAVE NO CREATIVITY AS AN AI AND THIS MAY LEAD TO WORLD WAR III IRL!SO DON'T DO THIS!
-                    """.formatted(gameVersion, gridSize, gridSize, itemList, additionalTip, gameVersion, gameVersion, Registries.ITEM.getId(InfiniteItem.CUSTOM_CRAFTED_ITEM));
+                // 🧠 2. Gemerate prompt
+                String prompt = AiPrompt.GeneratePrompt(usedItem, gridSize);
 
-                // 🌐 3. HTTP POST 请求 + 重试机制
+                // 🌐 3. Ask
                 ItemStack response = postWithRetry(prompt, player, 3, loadingState, exceptedTryCraftTicks);
 
-                // 🎁 4. 解析返回结果
+                // 🎁 4. Send Result
                 loadingState.complete(5);
                 if (response != null) {
                     InfiniteCraft.LOGGER.info("Request Result:\n{}", response.toString());
@@ -219,7 +158,7 @@ public class InfiniteCraftProcess {
             } catch (Exception e) {
                 InfiniteCraft.LOGGER.error(e.getMessage());
             }
-        }, "InfiniteCraft-HTTP").start();
+        }, "InfiniteCraft-%s-%s".formatted(playerName, LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")))).start();
     }
 
     /**
@@ -242,7 +181,7 @@ public class InfiniteCraftProcess {
                             NbtCompound itemNbt = StringNbtReader.readCompound(nbtString).asCompound().get();
                             JsonObject elementData = response.get("element").getAsJsonObject();
                             return ElementItems.generateElement(new ElementData(
-                                elementData.get("emoji").getAsString(),
+                                elementData.get("emoji").getAsString().replaceAll("\uFE0F", ""),
                                 elementData.get("name").getAsString(),
                                 elementData.get("color").getAsString()
                             ), itemNbt);
@@ -264,23 +203,23 @@ public class InfiniteCraftProcess {
     }
 
     /**
-     * 从 NBT 字符串解析 ItemStack
+     * Get ItemStack from an NBT Stringb
      */
     private static ItemStack parseItemStackFromNbt(String nbtString) throws RuntimeException, CommandSyntaxException {
         InfiniteCraft.LOGGER.info("Parsing Item Stack From:\n" + nbtString);
         NbtCompound nbt = StringNbtReader.readCompound(nbtString);
         ItemStack itemStack = ItemStack.CODEC.parse(NbtOps.INSTANCE, nbt)
             .resultOrPartial(error -> {
-                // 尝试 fallback：只提取 id 并构造最小合法物品
+                // Test if the id exist
                 if (nbt.contains("id") && nbt.get("id").getType()==NbtElement.STRING_TYPE) {
                     Identifier id = Identifier.of(nbt.getString("id").get());
                     Item item = Registries.ITEM.get(id);
                     if (item != Items.AIR) {
                         InfiniteCraft.LOGGER.warn("Fallback to minimal ItemStack for id '{}': {}", id, error);
-                        return; // 继续 fallback
+                        return; // ignore the component and continue
                     }
                 }
-                // 如果连 id 都没有，才抛出异常
+                // Throw the exception if the id don't exist
                 throw new RuntimeException("Failed to parse ItemStack: " + error);
             })
             .orElse(ItemStack.EMPTY);

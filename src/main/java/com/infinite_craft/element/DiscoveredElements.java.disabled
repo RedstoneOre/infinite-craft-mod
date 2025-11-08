@@ -1,0 +1,49 @@
+package com.infinite_craft.element;
+
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.minecraft.component.ComponentType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
+
+public class DiscoveredElements {
+    public static final ItemGroup GROUP = FabricItemGroup.builder()
+        .icon(() -> new ItemStack(Items.BOOK))
+        .displayName(Text.translatable("itemGroup.infinite_craft.discovered_elements"))
+        .entries((context, entries) -> {
+            PlayerEntity player = context.player();
+            if (player != null) {
+                NbtCompound compound = player.getComponent(DiscoveringPlayerData.DISCOVERED_ELEMENTS);
+                for (String key : compound.getKeys()) {
+                    ElementData data = ElementData.fromNbt(compound.getCompound(key));
+                    entries.add(data.toItemStack());
+                }
+            }
+        })
+        .build();
+
+    public static void add(PlayerEntity player, ElementData data) {
+        NbtCompound compound = player.getComponent(DiscoveringPlayerData.DISCOVERED_ELEMENTS);
+        compound.put(data.name(), data.toNbt());
+        player.setComponent(InfiniteCraftComponents.DiscoveringPlayerData.DISCOVERED_ELEMENTS, compound);
+    }
+
+    public static void remove(PlayerEntity player, String name) {
+        NbtCompound compound = player.getComponent(DiscoveringPlayerData.DISCOVERED_ELEMENTS);
+        compound.remove(name);
+        player.setComponent(DiscoveringPlayerData.DISCOVERED_ELEMENTS, compound);
+    }
+
+    public static Optional<ElementData> find(PlayerEntity player, String name) throws NoSuchElementException {
+        NbtCompound compound = player.getComponent(DiscoveringPlayerData.DISCOVERED_ELEMENTS);
+        return compound.contains(name) ? Optional.of(new ElementData(compound.getCompound(name).orElseThrow())) : Optional.empty();
+    }
+}
