@@ -26,7 +26,6 @@ public class CraftingTableBlockMixin {
     )
     private void onCraftingTableUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
         if (!world.isClient() && player instanceof ServerPlayerEntity serverPlayer && !hit.isAgainstWorldBorder()) {
-			InfiniteCraft.LOGGER.info("CraftingTableBlockMixin triggered for {}", player.getName().getString());
 			InfiniteCraftNetworking.sendArrowProgress(serverPlayer, (int) InfiniteCraftFakeProgressTask.getProgress(serverPlayer));
 		}
     }

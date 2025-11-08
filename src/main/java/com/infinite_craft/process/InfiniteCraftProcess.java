@@ -3,6 +3,7 @@ package com.infinite_craft.process;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import com.google.gson.JsonObject;
 import com.infinite_craft.InfiniteCraft;
@@ -181,22 +182,24 @@ public class InfiniteCraftProcess {
                         if(!response.has("element")){
                             return parseItemStackFromNbt(nbtString);
                         } else {
-                            NbtCompound itemNbt = StringNbtReader.readCompound(nbtString).asCompound().get();
                             JsonObject elementData = response.get("element").getAsJsonObject();
                             return ElementItems.generateElement(new ElementData(
                                     elementData.get("emoji").getAsString().replaceAll("\uFE0F", ""),
                                     elementData.get("name").getAsString(),
-                                    elementData.get("color").getAsString()
+                                    elementData.get("color").getAsString(),
+                                    Optional.ofNullable(Identifier.tryParse(elementData.get("model").getAsString())).orElseThrow()
                                 ).checked(
                                     GlobalDiscoveringDataManager.get(player.getEntityWorld().getServer()).getDiscovered()
-                                ), itemNbt);
+                                ));
                         }
+                    } catch (NullPointerException e) {
+                        throw new AiProblemException("The AI api is kinda broken,Illegal Element!");
                     } catch (Exception e) {
                         InfiniteCraft.LOGGER.error(e.getMessage());
-                        throw new Exception("The AI is too dumb!"+e.getMessage());
+                        throw new AiProblemException("The AI is too dumb!"+e.getMessage());
                     }
                 }
-                throw new Exception("The AI api is kinda broken,Illegal Response!");
+                throw new AiProblemException("The AI api is kinda broken,Illegal Response!");
             } catch (Exception e) {
                 System.err.println("[InfiniteCraft] Request failed ( Retry " + (i + 1) + " ): " + e.getMessage());
                 try {

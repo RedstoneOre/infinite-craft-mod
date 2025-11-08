@@ -4,7 +4,8 @@
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"HandledScreenAccessor",
-		"CraftingScreenMixin"
+		"CraftingScreenMixin",
+		"ItemModelManagerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

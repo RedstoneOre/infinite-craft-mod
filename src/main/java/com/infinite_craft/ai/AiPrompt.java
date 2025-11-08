@@ -47,6 +47,10 @@ public class AiPrompt {
 						"color": {
 							"type": "string",
 							"description": "A string describe a color, can be #RRGGBB or minecraft color words like aqua"
+						},
+						"model": {
+							"type": "string",
+							"description": "An identifier of a existed item, the element will use it's model, like minecraft:water_bucket"
 						}
 					}
 				}
@@ -162,8 +166,8 @@ public class AiPrompt {
 
 	private static String getCraftElementTip(){
 		return """
-			If you think the result should be an ELEMENT, like the original Infinite Craft game, then describe the element in {"name":$name,"emoji":$emoji,"color":$color} format in `element`, and provide "minecraft:item_model" in `itemNbt`.
-			\tFor example, the user input element `Wind` and `Water`, you should return {"success": true, "element": {"name":"Wave","emoji":"🌊","color":"aqua"}, "itemNbt": "{components: {\\"minecraft:item_model\\": \\"minecraft:snow_block\\"}}"}
+			If you think the result should be an ELEMENT, like the original Infinite Craft game, then describe the element in {"name":$name,"emoji":$emoji,"color":$color,"model":$model} format in `element`, and put nothing into `itemNbt`.
+			\tFor example, the user input element `Wind` and `Water`, you should return {"success": true, "element": {"name":"Wave","emoji":"🌊","color":"aqua","model":"minecraft:snow_block"}, "itemNbt": ""}
 			\tIf the element name have multiple words, simply separate them with spaces.
 			""";
 	}

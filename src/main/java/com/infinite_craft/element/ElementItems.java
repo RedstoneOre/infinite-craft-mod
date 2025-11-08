@@ -44,23 +44,23 @@ public class ElementItems {
 
 	public static final ElementItem ELEMENT_WIND = registerElement("element.wind", ElementItem::new, new ElementItem.Settings()
 		.component(ElementItems.ELEMENT_COMPONENT, 
-			new ElementData("💨", "wind", "white").generateElementComponent()
-		).modelId(Identifier.ofVanilla("wind_charge")));
+			new ElementData("💨", "wind", "white", Identifier.ofVanilla("wind_charge")).generateElementComponent()
+		));
 
 	public static final ElementItem ELEMENT_FIRE = registerElement("element.fire", ElementItem::new, new ElementItem.Settings()
 		.component(ElementItems.ELEMENT_COMPONENT, 
-			new ElementData("🔥", "fire", "red").generateElementComponent()
-		).modelId(Identifier.ofVanilla("flint_and_steel")));
+			new ElementData("🔥", "fire", "red", Identifier.ofVanilla("flint_and_steel")).generateElementComponent()
+		));
 
 	public static final ElementItem ELEMENT_WATER = registerElement("element.water", ElementItem::new, new ElementItem.Settings()
 		.component(ElementItems.ELEMENT_COMPONENT, 
-			new ElementData("💧", "water", "aqua").generateElementComponent()
-		).modelId(Identifier.ofVanilla("water_bucket")));
+			new ElementData("💧", "water", "aqua", Identifier.ofVanilla("water_bucket")).generateElementComponent()
+		));
 
 	public static final ElementItem ELEMENT_EARTH = registerElement("element.earth", ElementItem::new, new ElementItem.Settings()
 		.component(ElementItems.ELEMENT_COMPONENT, 
-			new ElementData("🌍", "earth", "brown").generateElementComponent()
-		).modelId(Identifier.ofVanilla("grass_block")));
+			new ElementData("🌍", "earth", "brown", Identifier.ofVanilla("grass_block")).generateElementComponent()
+		));
 
 	public static final Map<String, ? extends Item> BASIC_ELEMENTS = Map.of(
 		"wind", ELEMENT_WIND,
@@ -68,7 +68,7 @@ public class ElementItems {
 		"water", ELEMENT_WATER,
 		"earth", ELEMENT_EARTH
 	);
-	public static ItemStack generateElement(ElementData elementData, NbtCompound itemNbt){
+	public static ItemStack generateElement(ElementData elementData){
 		if(BASIC_ELEMENTS.containsKey(elementData.name)){
 			try{
 				ItemStack itemStack = BASIC_ELEMENTS.get(elementData.name).getDefaultStack();
@@ -80,17 +80,6 @@ public class ElementItems {
 		ItemStack itemStack = ELEMENT.getDefaultStack();
 		itemStack.setCount(1);
 		itemStack.set(ELEMENT_COMPONENT, elementData.generateElementComponent());
-		try{
-			itemStack.set(DataComponentTypes.ITEM_MODEL, Identifier.of(
-				itemNbt.getCompoundOrEmpty("components").getString("minecraft:item_model").orElseGet(
-					()->{
-						return itemNbt.getCompoundOrEmpty("components").getString("item_model").orElseThrow();
-					}
-				)
-			));
-		} catch ( NoSuchElementException e ){
-			e.printStackTrace();
-		}
 		InfiniteCraft.LOGGER.info("Generated Element: {}", ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, itemStack)
 			.resultOrPartial(error -> {})
 			.map(nbtElement -> (NbtCompound) nbtElement)
