@@ -113,9 +113,9 @@ shadowJar {
     from sourceSets.client.output
 
     // relocate
+    def shadowConfig = project.configurations.shadow
 		doFirst {
         def seen = [] as Set
-        def shadowConfig = project.configurations.shadow
 
         shadowConfig.resolvedConfiguration.resolvedArtifacts.each { artifact ->
             def jarFile = artifact.file
@@ -175,7 +175,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 21
-	options.compilerArgs << "-Xlint:all" << "-Werror" << "-Xdiags:verbose"
+	options.compilerArgs << "-Xlint:all" << "-Werror" << "-Xdiags:verbose" << "-Xlint:-processing"
 }
 
 java {

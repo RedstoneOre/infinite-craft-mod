@@ -112,4 +112,10 @@ public class ElementData {
         word.setLength(0);
     }
 
+    public ElementData checked(DiscoveringPlayerData checkingData){
+        checkingData.get(name).ifPresent(value -> {
+            this.init(value.emoji(), value.name(), value.color());
+        });
+        return this;
+    }
 }

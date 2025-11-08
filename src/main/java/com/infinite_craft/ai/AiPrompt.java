@@ -163,7 +163,7 @@ public class AiPrompt {
 	private static String getCraftElementTip(){
 		return """
 			If you think the result should be an ELEMENT, like the original Infinite Craft game, then describe the element in {"name":$name,"emoji":$emoji,"color":$color} format in `element`, and provide "minecraft:item_model" in `itemNbt`.
-			\tFor example, the user input element `Wind` and `Water`, you should return {"success": true, "element": {"name":"Wave","emoji":"🌊","color":"aqua"}, "itemNbt": "{components: {\\"minecraft:item_model\\": \\"minecraft:blue_stained_glass\\"}}"}
+			\tFor example, the user input element `Wind` and `Water`, you should return {"success": true, "element": {"name":"Wave","emoji":"🌊","color":"aqua"}, "itemNbt": "{components: {\\"minecraft:item_model\\": \\"minecraft:snow_block\\"}}"}
 			\tIf the element name have multiple words, simply separate them with spaces.
 			""";
 	}

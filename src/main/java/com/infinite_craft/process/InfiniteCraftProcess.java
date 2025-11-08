@@ -3,17 +3,17 @@ package com.infinite_craft.process;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
 
 import com.google.gson.JsonObject;
 import com.infinite_craft.InfiniteCraft;
-import com.infinite_craft.InfiniteItem;
 import com.infinite_craft.ai.AiPrompt;
+import com.infinite_craft.element.ElementComponentType;
 import com.infinite_craft.element.ElementData;
 import com.infinite_craft.element.ElementItems;
+import com.infinite_craft.element.PlayerEntityExt;
+import com.infinite_craft.element.globaldata.GlobalDiscoveringDataManager;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.SharedConstants;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -57,7 +57,6 @@ public class InfiniteCraftProcess {
         for (int i = 0; i < slotCount; i++) {
             Slot slot=inputs.get(i);
             if (slot.getStack().isEmpty()) continue;
-            ItemStack stack = slot.getStack();
             minInputItemStack=Math.min(slot.getStack().getCount(), minInputItemStack);
         }
         InfiniteCraft.LOGGER.info("Min Input Item Stack: {}", minInputItemStack);
@@ -106,6 +105,11 @@ public class InfiniteCraftProcess {
                                         ),
                                     false);
                                     ItemStack copiedItemStack = response.copy();
+                                    if(ElementData.isElement(copiedItemStack)){
+                                        ElementComponentType elementComponentType = ElementData.fromItem(copiedItemStack).get().generateElementComponent();
+                                        ((PlayerEntityExt)player).getDiscoveringData().add(elementComponentType);
+                                        GlobalDiscoveringDataManager.get(server).getDiscovered().add(elementComponentType);
+                                    }
                                     if (!player.getInventory().insertStack(copiedItemStack)) {
                                         player.dropItem(copiedItemStack, false);
                                     }
@@ -181,10 +185,12 @@ public class InfiniteCraftProcess {
                             NbtCompound itemNbt = StringNbtReader.readCompound(nbtString).asCompound().get();
                             JsonObject elementData = response.get("element").getAsJsonObject();
                             return ElementItems.generateElement(new ElementData(
-                                elementData.get("emoji").getAsString().replaceAll("\uFE0F", ""),
-                                elementData.get("name").getAsString(),
-                                elementData.get("color").getAsString()
-                            ), itemNbt);
+                                    elementData.get("emoji").getAsString().replaceAll("\uFE0F", ""),
+                                    elementData.get("name").getAsString(),
+                                    elementData.get("color").getAsString()
+                                ).checked(
+                                    GlobalDiscoveringDataManager.get(player.getEntityWorld().getServer()).getDiscovered()
+                                ), itemNbt);
                         }
                     } catch (Exception e) {
                         InfiniteCraft.LOGGER.error(e.getMessage());
