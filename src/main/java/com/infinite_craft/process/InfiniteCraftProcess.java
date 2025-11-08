@@ -61,11 +61,10 @@ public class InfiniteCraftProcess {
         }
         InfiniteCraft.LOGGER.info("Min Input Item Stack: {}", minInputItemStack);
         if(minInputItemStack==0xff) return;
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < slotCount; i++) {
             Slot slot=inputs.get(i);
             if (slot.getStack().isEmpty()) continue;
-            usedItem.add(slot.getStack().copy());
-            usedItem.get(i).setCount(minInputItemStack);
+            usedItem.add(slot.getStack().copyWithCount(minInputItemStack));
             slot.takeStack(minInputItemStack);
         }
         final int finalMinInputItemStack=minInputItemStack;

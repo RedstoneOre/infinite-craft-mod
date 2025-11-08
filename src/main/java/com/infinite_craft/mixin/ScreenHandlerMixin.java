@@ -73,7 +73,11 @@ public abstract class ScreenHandlerMixin {
 
 				if (player instanceof ServerPlayerEntity serverPlayer) {
 					InfiniteCraftNetworking.sendArrowProgress(serverPlayer, 0);
-					InfiniteCraftProcess.requestCraftResult(world.getServer(), serverPlayer, serverPlayer.getBlockPos(), serverPlayer.getEntityWorld(), handler);
+					try{
+						InfiniteCraftProcess.requestCraftResult(world.getServer(), serverPlayer, serverPlayer.getBlockPos(), serverPlayer.getEntityWorld(), handler);
+					} catch(Exception e){
+						e.printStackTrace();
+					}
 				}
 			}
 		}
