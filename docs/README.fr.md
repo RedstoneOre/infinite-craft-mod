@@ -17,7 +17,7 @@ Infinite Craft est un mod Fabric qui ajoute un système de crafting innovant à 
 2. Utilisez-le dans Minecraft 1.21.10 avec Fabric & Fabric API
 3. Créez `config/InfiniteCraft.json` et lancez le jeu
 4. Fermez le jeu et ajoutez votre clé [API dans](https://aistudio.google.com/app/api-keys) `"gemini"."api_key"` dans `config/InfiniteCraft.json`
-5. Définissez `model` sur `gemini-2.5-flash`
+5. Définissez `"gemini"."model"` sur `gemini-2.5-flash`
 6. Redémarrez le jeu
 
 ## Configuration système
