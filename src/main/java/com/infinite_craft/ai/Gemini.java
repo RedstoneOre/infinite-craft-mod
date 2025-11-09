@@ -14,7 +14,7 @@ public class Gemini {
 		GenerateContentConfig.builder()
 			.responseMimeType("application/json")
 			.responseSchema(
-				Schema.fromJson(AiPrompt.promptJsonSchema.toString())
+				Schema.fromJson(AiPrompt.getPromptJsonSchema().toString())
 			)
 			.build();
 	public Client getClient(ServerPlayerEntity player){

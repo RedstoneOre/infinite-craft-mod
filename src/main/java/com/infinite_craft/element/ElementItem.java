@@ -1,5 +1,7 @@
 package com.infinite_craft.element;
 
+import java.util.Optional;
+
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,7 +16,7 @@ public class ElementItem extends Item {
 		ElementComponentType elementData = stack.getComponents().get(ElementItems.ELEMENT_COMPONENT);
 		Text elementText = elementData == null ?
 			stack.getComponents().getOrDefault(DataComponentTypes.ITEM_NAME, ScreenTexts.EMPTY) :
-			Text.literal(elementData.emoji()+elementData.name()).withColor(TextColor.parse(elementData.color()).result().orElse(TextColor.fromRgb(0xffffff)).getRgb());
+			Text.literal(elementData.emoji()+elementData.translated().orElseGet(elementData::name)).withColor(TextColor.parse(elementData.color()).result().orElse(TextColor.fromRgb(0xffffff)).getRgb());
 		return elementText;
 	}
 

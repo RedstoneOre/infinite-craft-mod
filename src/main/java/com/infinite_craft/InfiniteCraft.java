@@ -4,6 +4,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,20 +29,29 @@ public class InfiniteCraft implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	// OpenAIClient openAIClient = null;
-	public static Gemini gemini = new Gemini();
+	public static Gemini gemini = null;
 
-	public static InfiniteCraftConfig config = new InfiniteCraftConfig();
+	public static InfiniteCraftConfig config = null;
 
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
+		try{
+			config=new InfiniteCraftConfig();
+			config.load();
+			config.write();
+		} catch(IOException e){
+			LOGGER.error("Failed to read the config of infinite-craft!");
+		}
+		LOGGER.info("config: {}", config.toString());
+
+		gemini=new Gemini();
 		InfiniteItem.initialize();
 		ElementItems.initialize();
 		PayloadTypeRegistry.playS2C().register(SendArrowProgressS2CPayload.ID, SendArrowProgressS2CPayload.CODEC);
 		InfiniteCraftFakeProgressTask.registerTickHandler();
-		config.load();
 		config.write();
 		gemini.initClient(config);
 		DiscoveringPlayerData.register();

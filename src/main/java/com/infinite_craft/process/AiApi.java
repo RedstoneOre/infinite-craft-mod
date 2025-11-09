@@ -67,7 +67,7 @@ public class AiApi {
 			}
 			""").getAsJsonObject();
 		body.addProperty("prompt", prompt);
-		body.add("format", AiPrompt.promptJsonSchema);
+		body.add("format", AiPrompt.getPromptJsonSchema());
         try (OutputStream os = conn.getOutputStream()) {
             os.write(body.toString().getBytes(StandardCharsets.UTF_8));
         }

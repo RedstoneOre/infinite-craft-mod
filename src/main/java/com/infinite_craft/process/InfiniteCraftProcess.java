@@ -187,7 +187,10 @@ public class InfiniteCraftProcess {
                                     elementData.get("emoji").getAsString().replaceAll("\uFE0F", ""),
                                     elementData.get("name").getAsString(),
                                     elementData.get("color").getAsString(),
-                                    Optional.ofNullable(Identifier.tryParse(elementData.get("model").getAsString())).orElseThrow()
+                                    Optional.ofNullable(Identifier.tryParse(elementData.get("model").getAsString())).orElseThrow(),
+                                    elementData.has("translated") ?
+                                        elementData.get("translated").getAsString() :
+                                        null
                                 ).checked(
                                     GlobalDiscoveringDataManager.get(player.getEntityWorld().getServer()).getDiscovered()
                                 ));

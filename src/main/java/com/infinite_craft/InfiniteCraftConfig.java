@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -18,6 +19,7 @@ public class InfiniteCraftConfig {
     public String GeminiModelName = null;
     public String ModelProxy = "none";
     public String ModelType = "none";
+    public String Language = "en-US";
     public final JsonObject defaultConfig = JsonParser.parseString(
         """
         {
@@ -35,10 +37,12 @@ public class InfiniteCraftConfig {
             },
             "proxy": "none",
             "model": "gemini",
+            "lang": "en-US",
             "description": {
                 "proxy": "Proxy type, could be (none, system)",
                 "model": "The model to use, could be (none, gemini, ollama), use none if you only use the mod as a player of a server",
                 "gemini": "The gemini config",
+                "lang": "The language of the result, should be a language code: https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes, but you actually can use the language name",
                 "!!!": "This file will be overridden, so please save your important information somewhere else!"
             }
         }
@@ -49,6 +53,7 @@ public class InfiniteCraftConfig {
         public static final String GeminiJson="gemini";
         public static final String GeminiApiKey="api_key";
         public static final String GeminiModelName="model";
+        public static final String Language="lang";
         public static final StringOptions Proxy = new StringOptions("proxy", Set.of("none", "system"), "none");
         public static final StringOptions ModelType = new StringOptions("model", Set.of("none", "gemini", "ollama"), "none");
         public static class StringOptions {
@@ -61,7 +66,7 @@ public class InfiniteCraftConfig {
                 options=_options;
             }
             public String get(String ori){
-                if(options.contains(ori)){
+                if(ori==null || options.contains(ori)){
                     return ori;
                 }
                 return defaultValue;
@@ -69,7 +74,7 @@ public class InfiniteCraftConfig {
         }
 
     }
-    public void load() {
+    public void load() throws IOException {
         File configFile = getConfigFile();
         if (!configFile.exists()) {
             createFile(configFile);
@@ -86,8 +91,10 @@ public class InfiniteCraftConfig {
             }
             ModelProxy=KeyNames.Proxy.get(readStringFromObject(json, KeyNames.Proxy.name));
             ModelType=KeyNames.ModelType.get(readStringFromObject(json, KeyNames.ModelType.name));
+            Language=Optional.ofNullable(readStringFromObject(json, KeyNames.Language)).orElse("en-US");
         } catch (IOException e) {
             InfiniteCraft.LOGGER.error(e.getMessage());
+            throw e;
         }
     }
 
@@ -108,6 +115,7 @@ public class InfiniteCraftConfig {
             try {
                 newConfig.addProperty(KeyNames.Proxy.name, ModelProxy);
                 newConfig.addProperty(KeyNames.ModelType.name, ModelType);
+                newConfig.addProperty(KeyNames.Language, Language);
 
                 JsonObject geminiConfig = newConfig.get(KeyNames.GeminiJson).getAsJsonObject();
                 geminiConfig.addProperty(KeyNames.GeminiApiKey, GeminiApiKey);
@@ -147,5 +155,12 @@ public class InfiniteCraftConfig {
 
     private File getConfigFile(){
         return new File("config/InfiniteCraft.json");
+    }
+
+    @Override
+    public String toString(){
+        return
+            "Model Type: %s, Proxy Type: %s, Language: %s"
+            .formatted(ModelType, ModelProxy, Language);
     }
 }

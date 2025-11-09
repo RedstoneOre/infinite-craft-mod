@@ -12,19 +12,27 @@ public class ElementData {
 	String emoji;
 	String color;
     Identifier model;
+    Optional<String> translated;
 
-    private void init(String emoji, String name, String color, Identifier model) throws NullPointerException {
-        if(emoji == null || name == null){
+    private void init(String emoji, String name, String color, Identifier model, Optional<String> translated) throws NullPointerException {
+        if(emoji == null || name == null || color == null || model == null || translated == null){
             throw new NullPointerException("Null string when constructing ElementData");
         }
         this.emoji = emoji;
         this.name = toTitleCase(name);
         this.color = color;
         this.model = model;
+        translated.ifPresentOrElse(
+            str -> {this.translated=Optional.of(toTitleCase(str));},
+            () -> {this.translated=Optional.empty();}
+        );
     }
 
     public ElementData(String emoji, String name, String color, Identifier model) throws NullPointerException {
-        init(emoji, name, color, model);
+        init(emoji, name, color, model, Optional.empty());
+    }
+    public ElementData(String emoji, String name, String color, Identifier model, String translated) throws NullPointerException {
+        init(emoji, name, color, model, Optional.ofNullable(translated));
     }
     
     /**
@@ -41,16 +49,17 @@ public class ElementData {
             nbtCompound.getString("name").get(),
             nbtCompound.getString("emoji").get(),
             nbtCompound.getString("color").get(),
-            Optional.ofNullable(Identifier.tryParse(nbtCompound.getString("model").get())).orElseThrow()
+            Optional.ofNullable(Identifier.tryParse(nbtCompound.getString("model").get())).orElseThrow(),
+            nbtCompound.getString("translated")
         );
     }
 
     public ElementData(ElementComponentType componentType) throws NullPointerException {
-        init(componentType.emoji(), componentType.name(), componentType.color(), componentType.model());
+        init(componentType.emoji(), componentType.name(), componentType.color(), componentType.model(), componentType.translated());
     }
 
 	public ElementComponentType generateElementComponent(){
-		return new ElementComponentType(emoji, name, color, model);
+		return new ElementComponentType(emoji, name, color, model, translated);
 	}
 
 	public static boolean isElement(ItemStack itemStack){
@@ -115,12 +124,16 @@ public class ElementData {
 
     public ElementData checked(DiscoveringPlayerData checkingData){
         checkingData.get(name).ifPresent(value -> {
-            this.init(value.emoji(), value.name(), value.color(), value.model());
+            this.init(value.emoji(), value.name(), value.color(), value.model(), value.translated());
         });
         return this;
     }
 
     public Identifier getModel() {
         return model;
+    }
+
+    public Optional<String> getTranslated() {
+        return translated;
     }
 }

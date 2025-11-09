@@ -16,7 +16,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.Registries;
 
 public class AiPrompt {
-	public static JsonObject promptJsonSchema = JsonParser.parseString("""
+	private static JsonObject promptJsonSchema = JsonParser.parseString("""
 		{
 			"type": "object",
 			"required": [
@@ -36,7 +36,7 @@ public class AiPrompt {
 					"properties": {
 						"name": {
 							"type": "string",
-							"description": "The name of the element"
+							"description": "The name of the element in AMERICAN ENGLISH, EVEN YOU ARE ASKED TO USE OTHER LANGUAGES"
 						},
 						"emoji": {
 							"type": "string",
@@ -51,8 +51,18 @@ public class AiPrompt {
 						"model": {
 							"type": "string",
 							"description": "An identifier of a existed item, the element will use it's model, like minecraft:water_bucket"
+						},
+						"translated": {
+							"type": "string",
+							"description": "The Item name in the given language.Only exist if the language is not American English and the word in the given language is different from it in American English"
 						}
-					}
+					},
+					"required": [
+						"name",
+						"emoji",
+						"color",
+						"model"
+					]
 				}
 			}
 		}
@@ -171,6 +181,12 @@ public class AiPrompt {
 			\tIf the element name have multiple words, simply separate them with spaces.
 			""";
 	}
+
+    public static JsonObject getPromptJsonSchema() {
+        JsonObject result = promptJsonSchema.deepCopy();
+		result.addProperty("description", "The crafting result, YOU MUST USE LANGUAGE %s".formatted(InfiniteCraft.config.Language));
+		return result;
+    }
 
 	private enum CraftingType {
 		CRAFT_ITEM,
