@@ -47,10 +47,12 @@ The config file is `config/InfiniteCraft.json`, structure as follows:
   },
   "proxy": "...",
   "model": "...",
+  "lang": "en-US...",
   "description": {
     "proxy": "Proxy type, could be (none, system)",
     "model": "The model to use, could be (none, gemini, ollama), use none if you only use the mod as a player of a server",
     "gemini": "The gemini config",
+    "lang": "The language of the result, should be a language code: https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes, but you actually can use the language name",
     "!!!": "This file will be overridden, so please save your important information somewhere else!"
   }
 }

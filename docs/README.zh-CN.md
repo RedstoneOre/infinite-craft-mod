@@ -47,10 +47,12 @@ Infinite Craft是一个Fabric模组，它为Minecraft添加了一个创新的合
   },
   "proxy": "...",
   "model": "...",
+  "lang": "zh-CN...",
   "description": {
     "proxy": "代理类型, 可以是 (none, system)",
     "model": "模型类型, 可以是 (none, gemini, ollama), 如果你只用这个模组在服务器中玩可以使用none",
     "gemini": "Gemini配置",
+    "lang": "结果的语言, 应该是语言代码: https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes, 不过你其实也可以直接使用语言名称",
     "!!!": "这个文件将会被覆盖, 请将重要数据同时保存在其他位置!"
   }
 }
