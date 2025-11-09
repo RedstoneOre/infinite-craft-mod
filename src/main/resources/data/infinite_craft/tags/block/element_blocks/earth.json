@@ -1,0 +1,13 @@
+{
+  "values": [
+    "#minecraft:leaves",
+    "minecraft:stone",
+    "minecraft:deepslate",
+    "minecraft:dirt",
+    "minecraft:grass_block",
+    "minecraft:mycelium",
+    "minecraft:podzol",
+    "minecraft:coarse_dirt",
+    "minecraft:rooted_dirt"
+  ]
+}

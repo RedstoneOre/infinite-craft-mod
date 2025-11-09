@@ -2,5 +2,8 @@
   "item.infinite_craft.custom_crafted_item": "无尽合成!",
   "item.infinite_craft.vanillaify": "原版化",
   "chat.message.infinite_craft.craft.success": "合成了：",
-  "chat.message.infinite_craft.craft.return": "返还了： "
+  "chat.message.infinite_craft.craft.return": "返还了：",
+  "item.infinite_craft.element_catcher": "元素捕获器",
+  "item.infinite_craft.element_catcher.tooltip": "右键收集一个基础元素",
+  "item.infinite_craft.element_catcher.tooltip.2": "在不同环境中可获得土、火、水和风"
 }

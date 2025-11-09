@@ -1,0 +1,36 @@
+{
+  "criteria": {
+    "has_glass": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["minecraft:glass"] }
+        ]
+      }
+    },
+    "has_iron_nugget": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["minecraft:iron_nugget"] }
+        ]
+      }
+    },
+    "has_vanillaify": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["infinite_craft:vanillaify"] }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    ["has_glass", "has_iron_nugget", "has_vanillaify"]
+  ],
+  "rewards": {
+    "recipes": [
+      "infinite_craft:element_catcher"
+    ]
+  }
+}

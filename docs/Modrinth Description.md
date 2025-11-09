@@ -63,6 +63,12 @@ The config file is `config/InfiniteCraft.json`, structure as follows:
     ![Vanillaify Recipe](https://github.com/RedstoneOre/infinite-craft-mod/blob/main/docs/crafting%20vanillaify.png?raw=true)
    - Combine it with other items in the crafting table
 
+4. Element
+   - Elements are special types of item that you can craft with it like [the original game](https://neal.fun/infinite-craft)
+   - To Get basic element, you should craft a `Element Catcher`:
+    ![Element Catcher](docs/crafting%20element%20catcher.png)
+   - And you can crafting new elements/items with the element!
+
 ## Links
 
 - Github: https://github.com/RedstoneOre/infinite-craft-mod

@@ -4,5 +4,8 @@
   "item.infinite_craft.element": "Element",
   "item.infinite_craft.element.uncraftable": "Uncraftable Element",
   "chat.message.infinite_craft.craft.success": "Crafted: ",
-  "chat.message.infinite_craft.craft.return": "Returned: "
+  "chat.message.infinite_craft.craft.return": "Returned: ",
+  "item.infinite_craft.element_catcher": "Element Catcher",
+  "item.infinite_craft.element_catcher.tooltip": "Right-click to collect an basic element",
+  "item.infinite_craft.element_catcher.tooltip.2": "Get Earth, Fire, Water and Wind in different environment"
 }

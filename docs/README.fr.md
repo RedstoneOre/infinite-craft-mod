@@ -74,6 +74,12 @@ Le fichier de configuration est `config/InfiniteCraft.json`, structure comme sui
     ![Recette Vanillaify](crafting%20vanillaify.png)
   - Combinez-le avec d'autres objets dans la table de craft
 
+4. Éléments
+  - Les éléments sont des types spéciaux d'objets que vous pouvez fabriquer, comme dans [le jeu original](https://neal.fun/infinite-craft)
+  - Pour obtenir un élément de base, vous devez fabriquer un `Element Catcher` :
+    ![Element Catcher](docs/crafting%20element%20catcher.png)
+  - Et vous pouvez fabriquer de nouveaux éléments/objets à partir de cet élément !
+
 ## Liens
 
 - Modrinth: https://modrinth.com/mod/infinite-craft-mod

@@ -1,14 +1,12 @@
 package com.infinite_craft.element;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 import com.infinite_craft.InfiniteCraft;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.component.ComponentType;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
@@ -59,7 +57,7 @@ public class ElementItems {
 
 	public static final ElementItem ELEMENT_EARTH = registerElement("element.earth", ElementItem::new, new ElementItem.Settings()
 		.component(ElementItems.ELEMENT_COMPONENT, 
-			new ElementData("🌍", "earth", "brown", Identifier.ofVanilla("grass_block")).generateElementComponent()
+			new ElementData("🌍", "earth", "#9f4f1f", Identifier.ofVanilla("grass_block")).generateElementComponent()
 		));
 
 	public static final Map<String, ? extends Item> BASIC_ELEMENTS = Map.of(

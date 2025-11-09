@@ -20,7 +20,6 @@ public abstract class PlayerEntityMixin implements PlayerEntityExt {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void init(CallbackInfo ci) {
-        PlayerEntity self = (PlayerEntity) (Object) this;
         this.infiniteCraft$discoveringData = new DiscoveringPlayerData();
     }
 

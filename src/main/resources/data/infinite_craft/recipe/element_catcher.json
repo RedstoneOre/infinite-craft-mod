@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "minecraft:glass",
+    "#": "minecraft:iron_ingot",
+    ".": "minecraft:iron_nugget",
+    "@": "infinite_craft:vanillaify"
+  },
+  "pattern": [
+    "#@#",
+    "...",
+    " I "
+  ],
+  "result": {
+    "id": "infinite_craft:element_catcher",
+    "count": 32
+  },
+  "category": "misc",
+  "show_notification": true
+}

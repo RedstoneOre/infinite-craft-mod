@@ -3,7 +3,6 @@ package com.infinite_craft.element;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 
 import com.infinite_craft.InfiniteCraft;
 import com.mojang.serialization.Codec;

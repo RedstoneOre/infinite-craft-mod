@@ -2,7 +2,6 @@ package com.infinite_craft.mixin;
 
 import com.infinite_craft.InfiniteCraft;
 
-import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;

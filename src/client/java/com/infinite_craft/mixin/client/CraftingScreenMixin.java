@@ -1,7 +1,6 @@
 package com.infinite_craft.mixin.client;
 
 import com.infinite_craft.ICraftingScreen;
-import com.infinite_craft.InfiniteCraftClient;
 
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;

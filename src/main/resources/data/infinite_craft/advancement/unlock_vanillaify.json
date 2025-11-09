@@ -1,0 +1,28 @@
+{
+  "criteria": {
+    "has_stick": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["minecraft:stick"] }
+        ]
+      }
+    },
+    "has_dirt": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["minecraft:dirt"] }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    ["has_stick", "has_dirt"]
+  ],
+  "rewards": {
+    "recipes": [
+      "infinite_craft:vanillaify"
+    ]
+  }
+}

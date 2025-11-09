@@ -1,0 +1,14 @@
+{
+  "values": [
+    "minecraft:water",
+    "minecraft:water_cauldron",
+    "minecraft:ice",
+    "minecraft:packed_ice",
+    "minecraft:blue_ice",
+    "minecraft:frosted_ice",
+    "minecraft:seagrass",
+    "minecraft:tall_seagrass",
+    "minecraft:kelp",
+    "minecraft:kelp_plant"
+  ]
+}

@@ -2,7 +2,6 @@ package com.infinite_craft.mixin;
 
 import com.infinite_craft.process.InfiniteCraftFakeProgressTask;
 import com.infinite_craft.networking.InfiniteCraftNetworking;
-import com.infinite_craft.InfiniteCraft;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

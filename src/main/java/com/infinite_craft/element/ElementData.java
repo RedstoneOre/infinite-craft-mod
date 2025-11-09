@@ -3,9 +3,6 @@ package com.infinite_craft.element;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import com.mojang.serialization.Codec;
-
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;

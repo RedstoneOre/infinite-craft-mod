@@ -1,15 +1,11 @@
 package com.infinite_craft.element;
 
-import java.util.Objects;
-
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
-import net.minecraft.util.Identifier;
 
 public class ElementItem extends Item {
 

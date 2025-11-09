@@ -2,5 +2,8 @@
   "item.infinite_craft.custom_crafted_item": "Artisanat Infini!",
   "item.infinite_craft.vanillaify": "Vanillifier",
   "chat.message.infinite_craft.craft.success": "Fabriqué: ",
-  "chat.message.infinite_craft.craft.return": "Retourné: "
+  "chat.message.infinite_craft.craft.return": "Retourné: ",
+  "item.infinite_craft.element_catcher": "Capteur d'éléments",
+  "item.infinite_craft.element_catcher.tooltip": "Cliquez avec le bouton droit pour collecter un élément de base",
+  "item.infinite_craft.element_catcher.tooltip.2": "Obtenez la Terre, le Feu, l'Eau et le Vent dans différents environnements"
 }
