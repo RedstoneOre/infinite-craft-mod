@@ -79,7 +79,7 @@ Infinite Craft 是一個 Fabric 模組，它為 Minecraft 新增了一個創新�
   4. **元素**
     - 元素是一種特殊的物品，你可以像[原版遊戲](https://neal.fun/infinite-craft)一樣用它來合成
     - 要獲得基礎元素，你需要先製作一個`元素捕捉器`：
-     ![元素捕捉器](docs/crafting%20element%20catcher.png)
+     ![元素捕捉器](crafting%20element%20catcher.png)
     - 然後你就可以用元素來合成新的元素/物品了！
 
 ## 連結

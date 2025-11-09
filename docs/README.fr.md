@@ -79,7 +79,7 @@ Le fichier de configuration est `config/InfiniteCraft.json`, structure comme sui
 4. Éléments
   - Les éléments sont des types spéciaux d'objets que vous pouvez fabriquer, comme dans [le jeu original](https://neal.fun/infinite-craft)
   - Pour obtenir un élément de base, vous devez fabriquer un `Element Catcher` :
-    ![Element Catcher](docs/crafting%20element%20catcher.png)
+    ![Element Catcher](crafting%20element%20catcher.png)
   - Et vous pouvez fabriquer de nouveaux éléments/objets à partir de cet élément !
 
 ## Liens
